@@ -34,11 +34,6 @@
             margin-bottom: 10px;
         }
         
-        .header p {
-            font-size: 1.1em;
-            opacity: 0.9;
-        }
-        
         .quiz-container {
             background: white;
             border-radius: 12px;
@@ -52,10 +47,8 @@
             border-bottom: 2px solid #e5e7eb;
         }
         
-        .question-block:last-child {
+        .question-block:last-of-type {
             border-bottom: none;
-            margin-bottom: 0;
-            padding-bottom: 0;
         }
         
         .question-number {
@@ -64,7 +57,6 @@
             font-weight: 600;
             margin-bottom: 8px;
             text-transform: uppercase;
-            letter-spacing: 0.5px;
         }
         
         .question-text {
@@ -124,6 +116,11 @@
             color: #1e40af;
         }
         
+        .option input:disabled + label {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+        
         .feedback {
             margin-top: 20px;
             padding: 16px;
@@ -151,20 +148,21 @@
         
         .feedback-title {
             font-weight: 600;
-            margin-bottom: 8px;
+            margin-bottom: 12px;
+            font-size: 1.05em;
         }
         
-        .feedback-content {
-            margin-top: 10px;
+        .feedback-text {
+            margin-bottom: 12px;
         }
         
         .theory-reference {
             background: #fef3c7;
             border-radius: 4px;
             padding: 10px;
-            margin-top: 10px;
             font-size: 0.85em;
             color: #78350f;
+            margin-top: 12px;
         }
         
         .button-group {
@@ -240,20 +238,6 @@
             color: #0c4a6e;
             font-size: 1em;
         }
-        
-        @media (max-width: 768px) {
-            .quiz-container {
-                padding: 20px;
-            }
-            
-            .header h1 {
-                font-size: 1.8em;
-            }
-            
-            .question-text {
-                font-size: 1em;
-            }
-        }
     </style>
 </head>
 <body>
@@ -263,506 +247,210 @@
             <p>Test your knowledge across all domains</p>
         </div>
         
-        <form id="quizForm" class="quiz-container">
-            <!-- Question 1 -->
-            <div class="question-block">
-                <div class="question-number">Question 1 of 10</div>
-                <div class="question-text">Programmatic Enforcement vs Prompt Guidance</div>
-                <div class="situation">
-                    <strong>Situation:</strong> You have a customer support agent with tools: `get_customer`, `lookup_order`, and `process_refund`. Currently, the system prompt instructs the agent to "always verify customer identity before processing refunds." However, production logs show 5% of refunds are processed without proper verification.
-                </div>
-                <div class="options">
-                    <div class="option">
-                        <input type="radio" id="q1_a" name="question1" value="a">
-                        <label for="q1_a">A) Add more detailed prompt instructions emphasizing the importance of verification</label>
-                    </div>
-                    <div class="option">
-                        <input type="radio" id="q1_b" name="question1" value="b">
-                        <label for="q1_b">B) Implement a programmatic precondition that blocks `process_refund` until `get_customer` returns a verified customer ID</label>
-                    </div>
-                    <div class="option">
-                        <input type="radio" id="q1_c" name="question1" value="c">
-                        <label for="q1_c">C) Add few-shot examples showing correct verification patterns</label>
-                    </div>
-                    <div class="option">
-                        <input type="radio" id="q1_d" name="question1" value="d">
-                        <label for="q1_d">D) Reduce the agent's toolset to remove `process_refund` capability</label>
-                    </div>
-                </div>
-                <div class="feedback" id="question1_feedback">
-                    <div class="feedback-title"></div>
-                    <div class="feedback-content"></div>
-                </div>
-                <div class="button-group">
-                    <button type="button" class="btn-submit" onclick="checkAnswer('question1')">Submit Answer</button>
-                </div>
-            </div>
-            
-            <!-- Question 2 -->
-            <div class="question-block">
-                <div class="question-number">Question 2 of 10</div>
-                <div class="question-text">CLAUDE.md Hierarchy and Project Configuration</div>
-                <div class="situation">
-                    <strong>Situation:</strong> Your team just hired a new developer. They cloned the repository and started using Claude Code. The original team members follow specific testing conventions and API patterns defined in CLAUDE.md. The new developer does not see these instructions and writes code that violates project standards. Investigation shows the standards were placed in `~/.claude/CLAUDE.md` on the original developers' machines.
-                </div>
-                <div class="options">
-                    <div class="option">
-                        <input type="radio" id="q2_a" name="question2" value="a">
-                        <label for="q2_a">A) Have the new developer manually copy the instructions to their `~/.claude/CLAUDE.md`</label>
-                    </div>
-                    <div class="option">
-                        <input type="radio" id="q2_b" name="question2" value="b">
-                        <label for="q2_b">B) Move the standards to `.claude/CLAUDE.md` in the repository so all team members automatically receive them</label>
-                    </div>
-                    <div class="option">
-                        <input type="radio" id="q2_c" name="question2" value="c">
-                        <label for="q2_c">C) Add the standards to the root `CLAUDE.md` and instruct the new developer to merge them with their user config</label>
-                    </div>
-                    <div class="option">
-                        <input type="radio" id="q2_d" name="question2" value="d">
-                        <label for="q2_d">D) Create directory-level CLAUDE.md files in each subdirectory containing relevant standards</label>
-                    </div>
-                </div>
-                <div class="feedback" id="question2_feedback">
-                    <div class="feedback-title"></div>
-                    <div class="feedback-content"></div>
-                </div>
-                <div class="button-group">
-                    <button type="button" class="btn-submit" onclick="checkAnswer('question2')">Submit Answer</button>
-                </div>
-            </div>
-            
-            <!-- Question 3 -->
-            <div class="question-block">
-                <div class="question-number">Question 3 of 10</div>
-                <div class="question-text">Tool Allocation and Specialization</div>
-                <div class="situation">
-                    <strong>Situation:</strong> You have a document analysis subagent that specializes in parsing PDFs and extracting structured data. You notice it frequently misuses `fetch_url` to fetch arbitrary web pages instead of focusing on document analysis. The tool was intended to be used to download referenced documents by URL.
-                </div>
-                <div class="options">
-                    <div class="option">
-                        <input type="radio" id="q3_a" name="question3" value="a">
-                        <label for="q3_a">A) Remove `fetch_url` entirely and have the coordinator handle all URL fetching</label>
-                    </div>
-                    <div class="option">
-                        <input type="radio" id="q3_b" name="question3" value="b">
-                        <label for="q3_b">B) Replace the general-purpose `fetch_url` with a specialized `load_document` tool that validates URLs point to document formats (PDF, DOCX, etc.)</label>
-                    </div>
-                    <div class="option">
-                        <input type="radio" id="q3_c" name="question3" value="c">
-                        <label for="q3_c">C) Add detailed instructions to the agent prompt restricting `fetch_url` usage to document URLs only</label>
-                    </div>
-                    <div class="option">
-                        <input type="radio" id="q3_d" name="question3" value="d">
-                        <label for="q3_d">D) Implement a filter that blocks `fetch_url` calls to known search engine domains</label>
-                    </div>
-                </div>
-                <div class="feedback" id="question3_feedback">
-                    <div class="feedback-title"></div>
-                    <div class="feedback-content"></div>
-                </div>
-                <div class="button-group">
-                    <button type="button" class="btn-submit" onclick="checkAnswer('question3')">Submit Answer</button>
-                </div>
-            </div>
-            
-            <!-- Question 4 -->
-            <div class="question-block">
-                <div class="question-number">Question 4 of 10</div>
-                <div class="question-text">Prompt Chaining vs Dynamic Decomposition</div>
-                <div class="situation">
-                    <strong>Situation:</strong> Your system performs automated code reviews on pull requests. You have two approaches to consider: (1) a fixed sequence—analyze each file for local issues, then run a separate integration pass for cross-file concerns, or (2) generate subtasks dynamically based on what the system discovers (e.g., if circular dependencies are found, prioritize analyzing them).
-                </div>
-                <div class="options">
-                    <div class="option">
-                        <input type="radio" id="q4_a" name="question4" value="a">
-                        <label for="q4_a">A) Always use dynamic decomposition because it adapts to the actual code structure</label>
-                    </div>
-                    <div class="option">
-                        <input type="radio" id="q4_b" name="question4" value="b">
-                        <label for="q4_b">B) Use prompt chaining (fixed pipeline) because code reviews follow a predictable structure; each file is analyzed separately, then integration pass catches cross-file issues</label>
-                    </div>
-                    <div class="option">
-                        <input type="radio" id="q4_c" name="question4" value="c">
-                        <label for="q4_c">C) Use dynamic decomposition only for large PRs (20+ files); use prompt chaining for smaller PRs</label>
-                    </div>
-                    <div class="option">
-                        <input type="radio" id="q4_d" name="question4" value="d">
-                        <label for="q4_d">D) Use prompt chaining but allow the model to skip steps if it considers them unnecessary</label>
-                    </div>
-                </div>
-                <div class="feedback" id="question4_feedback">
-                    <div class="feedback-title"></div>
-                    <div class="feedback-content"></div>
-                </div>
-                <div class="button-group">
-                    <button type="button" class="btn-submit" onclick="checkAnswer('question4')">Submit Answer</button>
-                </div>
-            </div>
-            
-            <!-- Question 5 -->
-            <div class="question-block">
-                <div class="question-number">Question 5 of 10</div>
-                <div class="question-text">Few-shot Prompting for Ambiguous Scenarios</div>
-                <div class="situation">
-                    <strong>Situation:</strong> Your customer support agent frequently mishandles ambiguous customer requests. When a customer says "I want to speak to a manager," the agent sometimes attempts to resolve the issue first. When a customer says "My item is broken," the agent sometimes escalates immediately instead of investigating the order details first.
-                </div>
-                <div class="options">
-                    <div class="option">
-                        <input type="radio" id="q5_a" name="question5" value="a">
-                        <label for="q5_a">A) Improve the system prompt with more explicit rules for escalation</label>
-                    </div>
-                    <div class="option">
-                        <input type="radio" id="q5_b" name="question5" value="b">
-                        <label for="q5_b">B) Add 3-4 few-shot examples that demonstrate the distinction: "I want to speak to a manager" → escalate immediately; "My item is broken" → investigate order first, then escalate if needed</label>
-                    </div>
-                    <div class="option">
-                        <input type="radio" id="q5_c" name="question5" value="c">
-                        <label for="q5_c">C) Split the agent into two separate agents—one for escalations and one for investigations</label>
-                    </div>
-                    <div class="option">
-                        <input type="radio" id="q5_d" name="question5" value="d">
-                        <label for="q5_d">D) Use sentiment analysis to determine when to escalate vs investigate</label>
-                    </div>
-                </div>
-                <div class="feedback" id="question5_feedback">
-                    <div class="feedback-title"></div>
-                    <div class="feedback-content"></div>
-                </div>
-                <div class="button-group">
-                    <button type="button" class="btn-submit" onclick="checkAnswer('question5')">Submit Answer</button>
-                </div>
-            </div>
-            
-            <!-- Question 6 -->
-            <div class="question-block">
-                <div class="question-number">Question 6 of 10</div>
-                <div class="question-text">Lost-in-the-middle Effect and Context Organization</div>
-                <div class="situation">
-                    <strong>Situation:</strong> You are synthesizing research from multiple sources into a final report. The coordinator has collected results from three subagents: web search (returned 80K tokens), document analysis (returned 70K tokens), and fact verification (returned 20K tokens). The synthesis agent reliably cites information from the first and last sections but frequently misses findings from the middle sections.
-                </div>
-                <div class="options">
-                    <div class="option">
-                        <input type="radio" id="q6_a" name="question6" value="a">
-                        <label for="q6_a">A) Summarize all sections to under 50K tokens to keep content within reliable processing range</label>
-                    </div>
-                    <div class="option">
-                        <input type="radio" id="q6_b" name="question6" value="b">
-                        <label for="q6_b">B) Place a key-findings summary at the beginning and organize the rest with explicit section headings to counteract the lost-in-the-middle effect</label>
-                    </div>
-                    <div class="option">
-                        <input type="radio" id="q6_c" name="question6" value="c">
-                        <label for="q6_c">C) Run the synthesis in three separate passes—one for each subagent's results</label>
-                    </div>
-                    <div class="option">
-                        <input type="radio" id="q6_d" name="question6" value="d">
-                        <label for="q6_d">D) Store the full results in a vector database and have the synthesis agent query it on demand</label>
-                    </div>
-                </div>
-                <div class="feedback" id="question6_feedback">
-                    <div class="feedback-title"></div>
-                    <div class="feedback-content"></div>
-                </div>
-                <div class="button-group">
-                    <button type="button" class="btn-submit" onclick="checkAnswer('question6')">Submit Answer</button>
-                </div>
-            </div>
-            
-            <!-- Question 7 -->
-            <div class="question-block">
-                <div class="question-number">Question 7 of 10</div>
-                <div class="question-text">Skills and Context Isolation</div>
-                <div class="situation">
-                    <strong>Situation:</strong> Your team created a `/dependency-map` skill that analyzes the full codebase structure, generates dependency graphs, identifies circular dependencies, and outputs a 150K-token report with visualizations and detailed explanations. After running the skill, developers report they lose track of their original task because the verbose output fills the context window.
-                </div>
-                <div class="options">
-                    <div class="option">
-                        <input type="radio" id="q7_a" name="question7" value="a">
-                        <label for="q7_a">A) Tell developers to manually summarize the output before continuing</label>
-                    </div>
-                    <div class="option">
-                        <input type="radio" id="q7_b" name="question7" value="b">
-                        <label for="q7_b">B) Add `context: fork` in the skill's SKILL.md frontmatter to run it in an isolated subagent context</label>
-                    </div>
-                    <div class="option">
-                        <input type="radio" id="q7_c" name="question7" value="c">
-                        <label for="q7_c">C) Split the skill into multiple smaller skills, each producing less output</label>
-                    </div>
-                    <div class="option">
-                        <input type="radio" id="q7_d" name="question7" value="d">
-                        <label for="q7_d">D) Instruct the skill to compress all output into a one-paragraph summary</label>
-                    </div>
-                </div>
-                <div class="feedback" id="question7_feedback">
-                    <div class="feedback-title"></div>
-                    <div class="feedback-content"></div>
-                </div>
-                <div class="button-group">
-                    <button type="button" class="btn-submit" onclick="checkAnswer('question7')">Submit Answer</button>
-                </div>
-            </div>
-            
-            <!-- Question 8 -->
-            <div class="question-block">
-                <div class="question-number">Question 8 of 10</div>
-                <div class="question-text">Structured Error Context and Recovery Decisions</div>
-                <div class="situation">
-                    <strong>Situation:</strong> A document analysis subagent encounters a corrupted PDF file and returns: `{"isError": true, "content": "File parsing failed"}`. The coordinator receives this response but does not know whether to retry with a different approach, skip the file and continue, or request the user provide the file in a different format.
-                </div>
-                <div class="options">
-                    <div class="option">
-                        <input type="radio" id="q8_a" name="question8" value="a">
-                        <label for="q8_a">A) Assume all file parsing errors are transient; implement automatic retry with exponential backoff</label>
-                    </div>
-                    <div class="option">
-                        <input type="radio" id="q8_b" name="question8" value="b">
-                        <label for="q8_b">B) Return structured error context: failure type (corruption), what was attempted (PDF parsing), whether it is retryable, and alternatives (convert to another format, manually review)</label>
-                    </div>
-                    <div class="option">
-                        <input type="radio" id="q8_c" name="question8" value="c">
-                        <label for="q8_c">C) Have the subagent silently skip the corrupted file and return an empty result marked as success</label>
-                    </div>
-                    <div class="option">
-                        <input type="radio" id="q8_d" name="question8" value="d">
-                        <label for="q8_d">D) Immediately escalate to a human when any file parsing error occurs</label>
-                    </div>
-                </div>
-                <div class="feedback" id="question8_feedback">
-                    <div class="feedback-title"></div>
-                    <div class="feedback-content"></div>
-                </div>
-                <div class="button-group">
-                    <button type="button" class="btn-submit" onclick="checkAnswer('question8')">Submit Answer</button>
-                </div>
-            </div>
-            
-            <!-- Question 9 -->
-            <div class="question-block">
-                <div class="question-number">Question 9 of 10</div>
-                <div class="question-text">PostToolUse Hooks and Data Normalization</div>
-                <div class="situation">
-                    <strong>Situation:</strong> Your agent uses three different MCP tools that return dates in different formats: Unix timestamps (1704067200), ISO 8601 dates (2024-01-01), and human-readable strings (January 1, 2024). The agent produces inconsistent output because it treats these formats differently and sometimes fails to compare or order dates correctly.
-                </div>
-                <div class="options">
-                    <div class="option">
-                        <input type="radio" id="q9_a" name="question9" value="a">
-                        <label for="q9_a">A) Add detailed instructions to the system prompt explaining date format differences and how to normalize them</label>
-                    </div>
-                    <div class="option">
-                        <input type="radio" id="q9_b" name="question9" value="b">
-                        <label for="q9_b">B) Implement a `PostToolUse` hook that intercepts tool results and normalizes all dates to ISO 8601 format before the agent processes them</label>
-                    </div>
-                    <div class="option">
-                        <input type="radio" id="q9_c" name="question9" value="c">
-                        <label for="q9_c">C) Create wrapper tools for each MCP server that normalize outputs before returning them</label>
-                    </div>
-                    <div class="option">
-                        <input type="radio" id="q9_d" name="question9" value="d">
-                        <label for="q9_d">D) Have the agent call a separate `normalize_dates` tool after each data retrieval</label>
-                    </div>
-                </div>
-                <div class="feedback" id="question9_feedback">
-                    <div class="feedback-title"></div>
-                    <div class="feedback-content"></div>
-                </div>
-                <div class="button-group">
-                    <button type="button" class="btn-submit" onclick="checkAnswer('question9')">Submit Answer</button>
-                </div>
-            </div>
-            
-            <!-- Question 10 -->
-            <div class="question-block">
-                <div class="question-number">Question 10 of 10</div>
-                <div class="question-text">tool_choice Parameter and Forced Selection</div>
-                <div class="situation">
-                    <strong>Situation:</strong> You have a data extraction system with multiple extraction tools: `extract_invoice`, `extract_receipt`, and `extract_statement`. You want to ensure that the model first calls `extract_metadata` to determine the document type before calling any of the specialized extraction tools.
-                </div>
-                <div class="options">
-                    <div class="option">
-                        <input type="radio" id="q10_a" name="question10" value="a">
-                        <label for="q10_a">A) Use `tool_choice: "auto"` and add instructions to always extract metadata first</label>
-                    </div>
-                    <div class="option">
-                        <input type="radio" id="q10_b" name="question10" value="b">
-                        <label for="q10_b">B) Use `tool_choice: "any"` to force the model to call some tool, then let it choose</label>
-                    </div>
-                    <div class="option">
-                        <input type="radio" id="q10_c" name="question10" value="c">
-                        <label for="q10_c">C) Use forced tool selection: `tool_choice: {"type": "tool", "name": "extract_metadata"}` to guarantee `extract_metadata` is called first</label>
-                    </div>
-                    <div class="option">
-                        <input type="radio" id="q10_d" name="question10" value="d">
-                        <label for="q10_d">D) Remove the specialized extraction tools and use only `extract_metadata` with a type parameter</label>
-                    </div>
-                </div>
-                <div class="feedback" id="question10_feedback">
-                    <div class="feedback-title"></div>
-                    <div class="feedback-content"></div>
-                </div>
-                <div class="button-group">
-                    <button type="button" class="btn-submit" onclick="checkAnswer('question10')">Submit Answer</button>
-                </div>
-            </div>
-            
-            <div class="score-section" id="scoreSection">
-                <div class="score-title">Quiz Complete!</div>
-                <div class="score-value" id="scoreValue">0%</div>
-                <div class="score-message" id="scoreMessage">Review your answers above</div>
-                <button type="button" class="btn-reset" onclick="resetQuiz()" style="margin-top: 20px; width: 100%; max-width: 200px;">Retake Quiz</button>
-            </div>
-        </form>
+        <div id="quizContainer" class="quiz-container"></div>
     </div>
     
     <script>
-        const answers = {
-            question1: { 
-                correct: 'b', 
-                feedback: 'CORRECT! When business rules require guaranteed compliance (like financial operations), prompts provide only probabilistic compliance (>90%). Programmatic preconditions provide deterministic guarantees (100%). A hook-based approach ensures the rule cannot be bypassed.' 
-, 
-                theory: 'Theory: Domain 1.4 & 1.5 - Programmatic enforcement vs prompt guidance' 
+        const quizData = [
+            {
+                id: 1,
+                title: "Programmatic Enforcement vs Prompt Guidance",
+                situation: "You have a customer support agent with tools: `get_customer`, `lookup_order`, and `process_refund`. Currently, the system prompt instructs the agent to 'always verify customer identity before processing refunds.' However, production logs show 5% of refunds are processed without proper verification.",
+                options: ["Add more detailed prompt instructions emphasizing the importance of verification", "Implement a programmatic precondition that blocks `process_refund` until `get_customer` returns a verified customer ID", "Add few-shot examples showing correct verification patterns", "Reduce the agent's toolset to remove `process_refund` capability"],
+                correct: 1,
+                feedback: "CORRECT! When business rules require guaranteed compliance (like financial operations), prompts provide only probabilistic compliance (>90%). Programmatic preconditions provide deterministic guarantees (100%). A hook-based approach ensures the rule cannot be bypassed.",
+                theory: "Domain 1.4 & 1.5 - Programmatic enforcement vs prompt guidance"
             },
-            question2: { 
-                correct: 'b', 
-                feedback: 'CORRECT! Project-level CLAUDE.md (`.claude/CLAUDE.md` or root) is automatically available to all team members when they clone the repository via version control. User-level configs are not shared and only apply to individual developers.' 
-, 
-                theory: 'Theory: Domain 3.1 - CLAUDE.md hierarchy: user, project, and directory levels' 
+            {
+                id: 2,
+                title: "CLAUDE.md Hierarchy and Project Configuration",
+                situation: "Your team just hired a new developer. They cloned the repository and started using Claude Code. The original team members follow specific testing conventions and API patterns. The new developer does not see these instructions and writes code that violates project standards. Investigation shows the standards were placed in `~/.claude/CLAUDE.md` on the original developers' machines.",
+                options: ["Have the new developer manually copy the instructions to their `~/.claude/CLAUDE.md`", "Move the standards to `.claude/CLAUDE.md` in the repository so all team members automatically receive them", "Add the standards to the root `CLAUDE.md` and instruct the new developer to merge them with their user config", "Create directory-level CLAUDE.md files in each subdirectory containing relevant standards"],
+                correct: 1,
+                feedback: "CORRECT! Project-level CLAUDE.md (`.claude/CLAUDE.md` or root) is automatically available to all team members when they clone the repository via version control. User-level configs are not shared and only apply to individual developers.",
+                theory: "Domain 3.1 - CLAUDE.md hierarchy: user, project, and directory levels"
             },
-            question3: { 
-                correct: 'b', 
-                feedback: 'CORRECT! Replacing a general-purpose tool with a specialized one fixes the root cause by constraining capability at the interface level. A `load_document` tool that validates URLs prevents misuse for arbitrary web fetching.' 
-, 
-                theory: 'Theory: Domain 2.3 - Tool allocation and specialized alternatives' 
+            {
+                id: 3,
+                title: "Tool Allocation and Specialization",
+                situation: "You have a document analysis subagent that specializes in parsing PDFs and extracting structured data. You notice it frequently misuses `fetch_url` to fetch arbitrary web pages instead of focusing on document analysis. The tool was intended to download referenced documents by URL.",
+                options: ["Remove `fetch_url` entirely and have the coordinator handle all URL fetching", "Replace the general-purpose `fetch_url` with a specialized `load_document` tool that validates URLs point to document formats (PDF, DOCX, etc.)", "Add detailed instructions to the agent prompt restricting `fetch_url` usage to document URLs only", "Implement a filter that blocks `fetch_url` calls to known search engine domains"],
+                correct: 1,
+                feedback: "CORRECT! Replacing a general-purpose tool with a specialized one fixes the root cause by constraining capability at the interface level. A `load_document` tool that validates URLs prevents misuse for arbitrary web fetching.",
+                theory: "Domain 2.3 - Tool allocation and specialized alternatives"
             },
-            question4: { 
-                correct: 'b', 
-                feedback: 'CORRECT! Prompt chaining is ideal for predictable, repeatable tasks like code reviews where the structure is always known up front (per-file analysis → integration pass). Dynamic decomposition is better for open-ended investigations.' 
-, 
-                theory: 'Theory: Domain 1.6 & Chapter 8.1-8.2 - Task decomposition strategies' 
+            {
+                id: 4,
+                title: "Prompt Chaining vs Dynamic Decomposition",
+                situation: "Your system performs automated code reviews on pull requests. You have two approaches to consider: (1) a fixed sequence—analyze each file for local issues, then run a separate integration pass for cross-file concerns, or (2) generate subtasks dynamically based on what the system discovers (e.g., if circular dependencies are found, prioritize analyzing them).",
+                options: ["Always use dynamic decomposition because it adapts to the actual code structure", "Use prompt chaining (fixed pipeline) because code reviews follow a predictable structure; each file is analyzed separately, then integration pass catches cross-file issues", "Use dynamic decomposition only for large PRs (20+ files); use prompt chaining for smaller PRs", "Use prompt chaining but allow the model to skip steps if it considers them unnecessary"],
+                correct: 1,
+                feedback: "CORRECT! Prompt chaining is ideal for predictable, repeatable tasks like code reviews where the structure is always known up front (per-file analysis → integration pass). Dynamic decomposition is better for open-ended investigations.",
+                theory: "Domain 1.6 & Chapter 8.1-8.2 - Task decomposition strategies"
             },
-            question5: { 
-                correct: 'b', 
-                feedback: 'CORRECT! Few-shot examples targeting ambiguous scenarios with explicit rationale (why escalate here vs investigate there) directly teaches the model the distinction. This is more effective than vague rules.' 
-, 
-                theory: 'Theory: Domain 4.2 - Few-shot prompting for ambiguous cases' 
+            {
+                id: 5,
+                title: "Few-shot Prompting for Ambiguous Scenarios",
+                situation: "Your customer support agent frequently mishandles ambiguous customer requests. When a customer says 'I want to speak to a manager,' the agent sometimes attempts to resolve the issue first. When a customer says 'My item is broken,' the agent sometimes escalates immediately instead of investigating the order details first.",
+                options: ["Improve the system prompt with more explicit rules for escalation", "Add 3-4 few-shot examples that demonstrate the distinction: 'I want to speak to a manager' → escalate immediately; 'My item is broken' → investigate order first, then escalate if needed", "Split the agent into two separate agents—one for escalations and one for investigations", "Use sentiment analysis to determine when to escalate vs investigate"],
+                correct: 1,
+                feedback: "CORRECT! Few-shot examples targeting ambiguous scenarios with explicit rationale (why escalate here vs investigate there) directly teaches the model the distinction. This is more effective than vague rules.",
+                theory: "Domain 4.2 - Few-shot prompting for ambiguous cases"
             },
-            question6: { 
-                correct: 'b', 
-                feedback: 'CORRECT! The lost-in-the-middle effect causes models to miss content in the middle of long inputs. Placing a key-findings summary at the beginning (primacy effect) and using explicit headings mitigates this.' 
-, 
-                theory: 'Theory: Domain 5.1 & Chapter 1.5 - Lost-in-the-middle effect and context positioning' 
+            {
+                id: 6,
+                title: "Lost-in-the-middle Effect and Context Organization",
+                situation: "You are synthesizing research from multiple sources into a final report. The coordinator has collected results from three subagents: web search (returned 80K tokens), document analysis (returned 70K tokens), and fact verification (returned 20K tokens). The synthesis agent reliably cites information from the first and last sections but frequently misses findings from the middle sections.",
+                options: ["Summarize all sections to under 50K tokens to keep content within reliable processing range", "Place a key-findings summary at the beginning and organize the rest with explicit section headings to counteract the lost-in-the-middle effect", "Run the synthesis in three separate passes—one for each subagent's results", "Store the full results in a vector database and have the synthesis agent query it on demand"],
+                correct: 1,
+                feedback: "CORRECT! The lost-in-the-middle effect causes models to miss content in the middle of long inputs. Placing a key-findings summary at the beginning (primacy effect) and using explicit headings mitigates this.",
+                theory: "Domain 5.1 & Chapter 1.5 - Lost-in-the-middle effect and context positioning"
             },
-            question7: { 
-                correct: 'b', 
-                feedback: 'CORRECT! `context: fork` runs the skill in an isolated subagent context so its verbose output does not pollute the main session history. The developer retains focus on their original task.' 
-, 
-                theory: 'Theory: Domain 3.2 - Skills with context: fork for isolated execution' 
+            {
+                id: 7,
+                title: "Skills and Context Isolation",
+                situation: "Your team created a `/dependency-map` skill that analyzes the full codebase structure, generates dependency graphs, identifies circular dependencies, and outputs a 150K-token report with visualizations and detailed explanations. After running the skill, developers report they lose track of their original task because the verbose output fills the context window.",
+                options: ["Tell developers to manually summarize the output before continuing", "Add `context: fork` in the skill's SKILL.md frontmatter to run it in an isolated subagent context", "Split the skill into multiple smaller skills, each producing less output", "Instruct the skill to compress all output into a one-paragraph summary"],
+                correct: 1,
+                feedback: "CORRECT! `context: fork` runs the skill in an isolated subagent context so its verbose output does not pollute the main session history. The developer retains focus on their original task.",
+                theory: "Domain 3.2 - Skills with context: fork for isolated execution"
             },
-            question8: { 
-                correct: 'b', 
-                feedback: 'CORRECT! Structured error context (failure type, attempted action, retryability, alternatives) enables the coordinator to make intelligent recovery decisions. Generic errors provide no actionable information.' 
-, 
-                theory: 'Theory: Domain 5.3 & Chapter 10.2 - Error propagation strategies' 
+            {
+                id: 8,
+                title: "Structured Error Context and Recovery Decisions",
+                situation: "A document analysis subagent encounters a corrupted PDF file and returns: `{\"isError\": true, \"content\": \"File parsing failed\"}`. The coordinator receives this response but does not know whether to retry with a different approach, skip the file and continue, or request the user provide the file in a different format.",
+                options: ["Assume all file parsing errors are transient; implement automatic retry with exponential backoff", "Return structured error context: failure type (corruption), what was attempted (PDF parsing), whether it is retryable, and alternatives (convert to another format, manually review)", "Have the subagent silently skip the corrupted file and return an empty result marked as success", "Immediately escalate to a human when any file parsing error occurs"],
+                correct: 1,
+                feedback: "CORRECT! Structured error context (failure type, attempted action, retryability, alternatives) enables the coordinator to make intelligent recovery decisions. Generic errors provide no actionable information.",
+                theory: "Domain 5.3 & Chapter 10.2 - Error propagation strategies"
             },
-            question9: { 
-                correct: 'b', 
-                feedback: 'CORRECT! A `PostToolUse` hook intercepts tool results before the agent processes them, applying normalization transformations (Unix timestamp → ISO 8601) at a centralized point.' 
-, 
-                theory: 'Theory: Domain 1.5 - PostToolUse hooks for data normalization' 
+            {
+                id: 9,
+                title: "PostToolUse Hooks and Data Normalization",
+                situation: "Your agent uses three different MCP tools that return dates in different formats: Unix timestamps (1704067200), ISO 8601 dates (2024-01-01), and human-readable strings (January 1, 2024). The agent produces inconsistent output because it treats these formats differently and sometimes fails to compare or order dates correctly.",
+                options: ["Add detailed instructions to the system prompt explaining date format differences and how to normalize them", "Implement a `PostToolUse` hook that intercepts tool results and normalizes all dates to ISO 8601 format before the agent processes them", "Create wrapper tools for each MCP server that normalize outputs before returning them", "Have the agent call a separate `normalize_dates` tool after each data retrieval"],
+                correct: 1,
+                feedback: "CORRECT! A `PostToolUse` hook intercepts tool results before the agent processes them, applying normalization transformations (Unix timestamp → ISO 8601) at a centralized point.",
+                theory: "Domain 1.5 - PostToolUse hooks for data normalization"
             },
-            question10: { 
-                correct: 'c', 
-                feedback: 'CORRECT! Forced tool selection (`tool_choice: {"type": "tool", "name": "extract_metadata"}`) makes it architecturally impossible to skip the first step. The model must call it before proceeding.' 
-, 
-                theory: 'Theory: Chapter 2.3 - tool_choice parameter and forced selection' 
+            {
+                id: 10,
+                title: "tool_choice Parameter and Forced Selection",
+                situation: "You have a data extraction system with multiple extraction tools: `extract_invoice`, `extract_receipt`, and `extract_statement`. You want to ensure that the model first calls `extract_metadata` to determine the document type before calling any of the specialized extraction tools.",
+                options: ["Use `tool_choice: \"auto\"` and add instructions to always extract metadata first", "Use `tool_choice: \"any\"` to force the model to call some tool, then let it choose", "Use forced tool selection: `tool_choice: {\"type\": \"tool\", \"name\": \"extract_metadata\"}` to guarantee `extract_metadata` is called first", "Remove the specialized extraction tools and use only `extract_metadata` with a type parameter"],
+                correct: 2,
+                feedback: "CORRECT! Forced tool selection (`tool_choice: {\"type\": \"tool\", \"name\": \"extract_metadata\"}`) makes it architecturally impossible to skip the first step. The model must call it before proceeding.",
+                theory: "Chapter 2.3 - tool_choice parameter and forced selection"
             }
-        };
-        
-        function checkAnswer(questionId) {
-            const radioButton = document.querySelector(`input[name="${questionId}"]:checked`);
-            
-            if (!radioButton) {
+        ];
+
+        let currentAnswers = {};
+
+        function renderQuiz() {
+            const container = document.getElementById('quizContainer');
+            let html = '';
+
+            quizData.forEach(question => {
+                html += `
+                    <div class="question-block">
+                        <div class="question-number">Question ${question.id} of ${quizData.length}</div>
+                        <div class="question-text">${question.title}</div>
+                        <div class="situation">
+                            <strong>Situation:</strong> ${question.situation}
+                        </div>
+                        <div class="options">
+                            ${question.options.map((opt, idx) => `
+                                <div class="option">
+                                    <input type="radio" id="q${question.id}_${idx}" name="q${question.id}" value="${idx}">
+                                    <label for="q${question.id}_${idx}">${String.fromCharCode(65 + idx)}) ${opt}</label>
+                                </div>
+                            `).join('')}
+                        </div>
+                        <div class="button-group">
+                            <button type="button" class="btn-submit" onclick="submitAnswer(${question.id})">Submit Answer</button>
+                        </div>
+                        <div class="feedback" id="feedback-${question.id}">
+                            <div class="feedback-title"></div>
+                            <div class="feedback-text"></div>
+                            <div class="theory-reference"></div>
+                        </div>
+                    </div>
+                `;
+            });
+
+            html += `
+                <div class="score-section" id="scoreSection">
+                    <div class="score-title">Quiz Complete!</div>
+                    <div class="score-value" id="scoreValue">0%</div>
+                    <div class="score-message" id="scoreMessage">Review your answers above</div>
+                    <button type="button" class="btn-reset" onclick="resetQuiz()" style="margin-top: 20px; width: 100%; max-width: 200px;">Retake Quiz</button>
+                </div>
+            `;
+
+            container.innerHTML = html;
+        }
+
+        function submitAnswer(questionId) {
+            const question = quizData.find(q => q.id === questionId);
+            const selected = document.querySelector(`input[name="q${questionId}"]:checked`);
+
+            if (!selected) {
                 alert('Please select an answer');
                 return;
             }
-            
-            const selectedAnswer = radioButton.value;
-            const feedbackDiv = document.getElementById(`${questionId}_feedback`);
-            
-            if (!feedbackDiv) {
-                console.error(`Feedback div not found for ${questionId}`);
-                return;
-            }
-            
-            const feedbackTitle = feedbackDiv.querySelector('.feedback-title');
-            const feedbackContent = feedbackDiv.querySelector('.feedback-content');
-            
-            const answerData = answers[questionId];
-            const isCorrect = selectedAnswer === answerData.correct;
-            
-            if (isCorrect) {
-                feedbackDiv.classList.add('show', 'correct');
-                feedbackTitle.textContent = '✓ Correct';
-                feedbackContent.innerHTML = `
-                    <p>${answerData.feedback}</p>
-                    <div class="theory-reference">${answerData.theory}</div>
-                `;
-            } else {
-                feedbackDiv.classList.add('show', 'incorrect');
-                feedbackTitle.textContent = '✗ Incorrect';
-                feedbackContent.innerHTML = `
-                    <p>The correct answer is: <strong>${answerData.correct.toUpperCase()}</strong></p>
-                    <p style="margin-top: 8px;">${answerData.feedback}</p>
-                    <div class="theory-reference">${answerData.theory}</div>
-                `;
-            }
-            
-            // Disable the options after answering
-            document.querySelectorAll(`input[name="${questionId}"]`).forEach(radio => {
+
+            const selectedIdx = parseInt(selected.value);
+            currentAnswers[questionId] = selectedIdx;
+
+            const feedbackDiv = document.getElementById(`feedback-${questionId}`);
+            const isCorrect = selectedIdx === question.correct;
+
+            feedbackDiv.querySelector('.feedback-title').textContent = isCorrect ? '✓ Correct' : '✗ Incorrect';
+            feedbackDiv.querySelector('.feedback-text').textContent = isCorrect 
+                ? question.feedback 
+                : `The correct answer is: ${String.fromCharCode(65 + question.correct)}. ${question.feedback}`;
+            feedbackDiv.querySelector('.theory-reference').textContent = question.theory;
+
+            feedbackDiv.classList.add('show', isCorrect ? 'correct' : 'incorrect');
+
+            // Disable all options for this question
+            document.querySelectorAll(`input[name="q${questionId}"]`).forEach(radio => {
                 radio.disabled = true;
             });
-            
-            // Disable the submit button
+
+            // Disable the button
             event.target.disabled = true;
             event.target.style.opacity = '0.5';
-            
-            // Check if all questions are answered
-            checkAllAnswered();
-        }
-        
-        function checkAllAnswered() {
-            const allAnswered = Object.keys(answers).every(q => {
-                return document.querySelector(`input[name="${q}"]:checked`);
-            });
-            
-            if (allAnswered) {
+
+            // Check if all questions answered
+            if (Object.keys(currentAnswers).length === quizData.length) {
                 setTimeout(showScore, 500);
             }
         }
-        
+
         function showScore() {
             let correct = 0;
-            Object.keys(answers).forEach(q => {
-                const selected = document.querySelector(`input[name="${q}"]:checked`);
-                if (selected && selected.value === answers[q].correct) {
+            Object.entries(currentAnswers).forEach(([qId, answer]) => {
+                const question = quizData.find(q => q.id === parseInt(qId));
+                if (answer === question.correct) {
                     correct++;
                 }
             });
-            
-            const total = Object.keys(answers).length;
-            const percentage = Math.round((correct / total) * 100);
-            
+
+            const percentage = Math.round((correct / quizData.length) * 100);
             document.getElementById('scoreValue').textContent = `${percentage}%`;
-            document.getElementById('scoreMessage').textContent = `You got ${correct} out of ${total} questions correct!`;
+            document.getElementById('scoreMessage').textContent = `You got ${correct} out of ${quizData.length} questions correct!`;
             document.getElementById('scoreSection').classList.add('show');
         }
-        
+
         function resetQuiz() {
-            document.getElementById('quizForm').reset();
-            document.querySelectorAll('.feedback').forEach(fb => {
-                fb.classList.remove('show', 'correct', 'incorrect');
-            });
+            currentAnswers = {};
             document.querySelectorAll('input[type="radio"]').forEach(radio => {
                 radio.disabled = false;
+                radio.checked = false;
+            });
+            document.querySelectorAll('.feedback').forEach(fb => {
+                fb.classList.remove('show', 'correct', 'incorrect');
             });
             document.querySelectorAll('button.btn-submit').forEach(btn => {
                 btn.disabled = false;
@@ -771,6 +459,9 @@
             document.getElementById('scoreSection').classList.remove('show');
             window.scrollTo(0, 0);
         }
+
+        // Initialize on load
+        renderQuiz();
     </script>
 </body>
 </html>

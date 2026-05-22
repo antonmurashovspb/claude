@@ -289,12 +289,12 @@
                         <label for="q1_d">D) Reduce the agent's toolset to remove `process_refund` capability</label>
                     </div>
                 </div>
-                <div class="feedback" id="q1_feedback">
+                <div class="feedback" id="question1_feedback">
                     <div class="feedback-title"></div>
                     <div class="feedback-content"></div>
                 </div>
                 <div class="button-group">
-                    <button type="button" class="btn-submit" onclick="checkAnswer('question1', 'b')">Submit Answer</button>
+                    <button type="button" class="btn-submit" onclick="checkAnswer('question1')">Submit Answer</button>
                 </div>
             </div>
             
@@ -303,7 +303,7 @@
                 <div class="question-number">Question 2 of 10</div>
                 <div class="question-text">CLAUDE.md Hierarchy and Project Configuration</div>
                 <div class="situation">
-                    <strong>Situation:</strong> Your team just hired a new developer. They cloned the repository and started using Claude Code. The original team members follow specific testing conventions and API patterns defined in CLAUDE.md. The new developer does not see these instructions and writes code that violates project standards. Investigation shows the standards were defined in `~/.claude/CLAUDE.md` on the original developers' machines.
+                    <strong>Situation:</strong> Your team just hired a new developer. They cloned the repository and started using Claude Code. The original team members follow specific testing conventions and API patterns defined in CLAUDE.md. The new developer does not see these instructions and writes code that violates project standards. Investigation shows the standards were placed in `~/.claude/CLAUDE.md` on the original developers' machines.
                 </div>
                 <div class="options">
                     <div class="option">
@@ -323,12 +323,12 @@
                         <label for="q2_d">D) Create directory-level CLAUDE.md files in each subdirectory containing relevant standards</label>
                     </div>
                 </div>
-                <div class="feedback" id="q2_feedback">
+                <div class="feedback" id="question2_feedback">
                     <div class="feedback-title"></div>
                     <div class="feedback-content"></div>
                 </div>
                 <div class="button-group">
-                    <button type="button" class="btn-submit" onclick="checkAnswer('question2', 'b')">Submit Answer</button>
+                    <button type="button" class="btn-submit" onclick="checkAnswer('question2')">Submit Answer</button>
                 </div>
             </div>
             
@@ -357,12 +357,12 @@
                         <label for="q3_d">D) Implement a filter that blocks `fetch_url` calls to known search engine domains</label>
                     </div>
                 </div>
-                <div class="feedback" id="q3_feedback">
+                <div class="feedback" id="question3_feedback">
                     <div class="feedback-title"></div>
                     <div class="feedback-content"></div>
                 </div>
                 <div class="button-group">
-                    <button type="button" class="btn-submit" onclick="checkAnswer('question3', 'b')">Submit Answer</button>
+                    <button type="button" class="btn-submit" onclick="checkAnswer('question3')">Submit Answer</button>
                 </div>
             </div>
             
@@ -371,7 +371,7 @@
                 <div class="question-number">Question 4 of 10</div>
                 <div class="question-text">Prompt Chaining vs Dynamic Decomposition</div>
                 <div class="situation">
-                    <strong>Situation:</strong> Your system performs automated code reviews on pull requests. You have two approaches to consider: (1) a fixed sequence—analyze each file for local issues, then run a separate pass for cross-file concerns, or (2) generate subtasks dynamically based on what the system discovers (e.g., if circular dependencies are found, prioritize analyzing dependency graphs).
+                    <strong>Situation:</strong> Your system performs automated code reviews on pull requests. You have two approaches to consider: (1) a fixed sequence—analyze each file for local issues, then run a separate integration pass for cross-file concerns, or (2) generate subtasks dynamically based on what the system discovers (e.g., if circular dependencies are found, prioritize analyzing them).
                 </div>
                 <div class="options">
                     <div class="option">
@@ -391,12 +391,12 @@
                         <label for="q4_d">D) Use prompt chaining but allow the model to skip steps if it considers them unnecessary</label>
                     </div>
                 </div>
-                <div class="feedback" id="q4_feedback">
+                <div class="feedback" id="question4_feedback">
                     <div class="feedback-title"></div>
                     <div class="feedback-content"></div>
                 </div>
                 <div class="button-group">
-                    <button type="button" class="btn-submit" onclick="checkAnswer('question4', 'b')">Submit Answer</button>
+                    <button type="button" class="btn-submit" onclick="checkAnswer('question4')">Submit Answer</button>
                 </div>
             </div>
             
@@ -425,12 +425,12 @@
                         <label for="q5_d">D) Use sentiment analysis to determine when to escalate vs investigate</label>
                     </div>
                 </div>
-                <div class="feedback" id="q5_feedback">
+                <div class="feedback" id="question5_feedback">
                     <div class="feedback-title"></div>
                     <div class="feedback-content"></div>
                 </div>
                 <div class="button-group">
-                    <button type="button" class="btn-submit" onclick="checkAnswer('question5', 'b')">Submit Answer</button>
+                    <button type="button" class="btn-submit" onclick="checkAnswer('question5')">Submit Answer</button>
                 </div>
             </div>
             
@@ -459,12 +459,12 @@
                         <label for="q6_d">D) Store the full results in a vector database and have the synthesis agent query it on demand</label>
                     </div>
                 </div>
-                <div class="feedback" id="q6_feedback">
+                <div class="feedback" id="question6_feedback">
                     <div class="feedback-title"></div>
                     <div class="feedback-content"></div>
                 </div>
                 <div class="button-group">
-                    <button type="button" class="btn-submit" onclick="checkAnswer('question6', 'b')">Submit Answer</button>
+                    <button type="button" class="btn-submit" onclick="checkAnswer('question6')">Submit Answer</button>
                 </div>
             </div>
             
@@ -493,12 +493,12 @@
                         <label for="q7_d">D) Instruct the skill to compress all output into a one-paragraph summary</label>
                     </div>
                 </div>
-                <div class="feedback" id="q7_feedback">
+                <div class="feedback" id="question7_feedback">
                     <div class="feedback-title"></div>
                     <div class="feedback-content"></div>
                 </div>
                 <div class="button-group">
-                    <button type="button" class="btn-submit" onclick="checkAnswer('question7', 'b')">Submit Answer</button>
+                    <button type="button" class="btn-submit" onclick="checkAnswer('question7')">Submit Answer</button>
                 </div>
             </div>
             
@@ -527,12 +527,12 @@
                         <label for="q8_d">D) Immediately escalate to a human when any file parsing error occurs</label>
                     </div>
                 </div>
-                <div class="feedback" id="q8_feedback">
+                <div class="feedback" id="question8_feedback">
                     <div class="feedback-title"></div>
                     <div class="feedback-content"></div>
                 </div>
                 <div class="button-group">
-                    <button type="button" class="btn-submit" onclick="checkAnswer('question8', 'b')">Submit Answer</button>
+                    <button type="button" class="btn-submit" onclick="checkAnswer('question8')">Submit Answer</button>
                 </div>
             </div>
             
@@ -561,12 +561,12 @@
                         <label for="q9_d">D) Have the agent call a separate `normalize_dates` tool after each data retrieval</label>
                     </div>
                 </div>
-                <div class="feedback" id="q9_feedback">
+                <div class="feedback" id="question9_feedback">
                     <div class="feedback-title"></div>
                     <div class="feedback-content"></div>
                 </div>
                 <div class="button-group">
-                    <button type="button" class="btn-submit" onclick="checkAnswer('question9', 'b')">Submit Answer</button>
+                    <button type="button" class="btn-submit" onclick="checkAnswer('question9')">Submit Answer</button>
                 </div>
             </div>
             
@@ -575,7 +575,7 @@
                 <div class="question-number">Question 10 of 10</div>
                 <div class="question-text">tool_choice Parameter and Forced Selection</div>
                 <div class="situation">
-                    <strong>Situation:</strong> You have a data extraction system with multiple extraction tools: `extract_invoice`, `extract_receipt`, and `extract_statement`. You want to ensure that the model first calls `extract_metadata` to determine the document type before calling any of the specialized extraction tools. Currently, the model sometimes skips metadata extraction and directly calls the wrong specialized tool.
+                    <strong>Situation:</strong> You have a data extraction system with multiple extraction tools: `extract_invoice`, `extract_receipt`, and `extract_statement`. You want to ensure that the model first calls `extract_metadata` to determine the document type before calling any of the specialized extraction tools.
                 </div>
                 <div class="options">
                     <div class="option">
@@ -595,12 +595,12 @@
                         <label for="q10_d">D) Remove the specialized extraction tools and use only `extract_metadata` with a type parameter</label>
                     </div>
                 </div>
-                <div class="feedback" id="q10_feedback">
+                <div class="feedback" id="question10_feedback">
                     <div class="feedback-title"></div>
                     <div class="feedback-content"></div>
                 </div>
                 <div class="button-group">
-                    <button type="button" class="btn-submit" onclick="checkAnswer('question10', 'c')">Submit Answer</button>
+                    <button type="button" class="btn-submit" onclick="checkAnswer('question10')">Submit Answer</button>
                 </div>
             </div>
             
@@ -617,57 +617,67 @@
         const answers = {
             question1: { 
                 correct: 'b', 
-                feedback: 'CORRECT! When business rules require guaranteed compliance (like financial operations), prompts provide only probabilistic compliance (>90%). Programmatic preconditions provide deterministic guarantees (100%). A hook-based approach ensures the rule cannot be bypassed.', 
+                feedback: 'CORRECT! When business rules require guaranteed compliance (like financial operations), prompts provide only probabilistic compliance (>90%). Programmatic preconditions provide deterministic guarantees (100%). A hook-based approach ensures the rule cannot be bypassed.' 
+, 
                 theory: 'Theory: Domain 1.4 & 1.5 - Programmatic enforcement vs prompt guidance' 
             },
             question2: { 
                 correct: 'b', 
-                feedback: 'CORRECT! Project-level CLAUDE.md (`.claude/CLAUDE.md` or root) is automatically available to all team members when they clone the repository via version control. User-level configs are not shared and only apply to individual developers.', 
+                feedback: 'CORRECT! Project-level CLAUDE.md (`.claude/CLAUDE.md` or root) is automatically available to all team members when they clone the repository via version control. User-level configs are not shared and only apply to individual developers.' 
+, 
                 theory: 'Theory: Domain 3.1 - CLAUDE.md hierarchy: user, project, and directory levels' 
             },
             question3: { 
                 correct: 'b', 
-                feedback: 'CORRECT! Replacing a general-purpose tool with a specialized one fixes the root cause by constraining capability at the interface level. A `load_document` tool that validates URLs point to documents prevents misuse for arbitrary web fetching.', 
+                feedback: 'CORRECT! Replacing a general-purpose tool with a specialized one fixes the root cause by constraining capability at the interface level. A `load_document` tool that validates URLs prevents misuse for arbitrary web fetching.' 
+, 
                 theory: 'Theory: Domain 2.3 - Tool allocation and specialized alternatives' 
             },
             question4: { 
                 correct: 'b', 
-                feedback: 'CORRECT! Prompt chaining is ideal for predictable, repeatable tasks like code reviews where the structure is always known up front (per-file analysis → integration pass). Dynamic decomposition is better for open-ended investigations where subtasks emerge during execution.', 
+                feedback: 'CORRECT! Prompt chaining is ideal for predictable, repeatable tasks like code reviews where the structure is always known up front (per-file analysis → integration pass). Dynamic decomposition is better for open-ended investigations.' 
+, 
                 theory: 'Theory: Domain 1.6 & Chapter 8.1-8.2 - Task decomposition strategies' 
             },
             question5: { 
                 correct: 'b', 
-                feedback: 'CORRECT! Few-shot examples targeting ambiguous scenarios with explicit rationale (why escalate here vs investigate there) directly teaches the model the distinction. This is more effective than vague prompt instructions.', 
+                feedback: 'CORRECT! Few-shot examples targeting ambiguous scenarios with explicit rationale (why escalate here vs investigate there) directly teaches the model the distinction. This is more effective than vague rules.' 
+, 
                 theory: 'Theory: Domain 4.2 - Few-shot prompting for ambiguous cases' 
             },
             question6: { 
                 correct: 'b', 
-                feedback: 'CORRECT! The lost-in-the-middle effect causes models to miss content in the middle of long inputs. Placing a key-findings summary at the beginning (primacy effect) and using explicit section headings helps preserve critical information in the reliably processed areas.', 
+                feedback: 'CORRECT! The lost-in-the-middle effect causes models to miss content in the middle of long inputs. Placing a key-findings summary at the beginning (primacy effect) and using explicit headings mitigates this.' 
+, 
                 theory: 'Theory: Domain 5.1 & Chapter 1.5 - Lost-in-the-middle effect and context positioning' 
             },
             question7: { 
                 correct: 'b', 
-                feedback: 'CORRECT! `context: fork` runs the skill in an isolated subagent context so its verbose output does not pollute the main session history. The developer retains focus on their original task while the subagent produces a separate summary.', 
+                feedback: 'CORRECT! `context: fork` runs the skill in an isolated subagent context so its verbose output does not pollute the main session history. The developer retains focus on their original task.' 
+, 
                 theory: 'Theory: Domain 3.2 - Skills with context: fork for isolated execution' 
             },
             question8: { 
                 correct: 'b', 
-                feedback: 'CORRECT! Structured error context (failure type, attempted action, retryability, alternatives) enables the coordinator to make intelligent recovery decisions. Generic errors provide no actionable information for deciding the next step.', 
+                feedback: 'CORRECT! Structured error context (failure type, attempted action, retryability, alternatives) enables the coordinator to make intelligent recovery decisions. Generic errors provide no actionable information.' 
+, 
                 theory: 'Theory: Domain 5.3 & Chapter 10.2 - Error propagation strategies' 
             },
             question9: { 
                 correct: 'b', 
-                feedback: 'CORRECT! A `PostToolUse` hook intercepts tool results before the agent processes them, applying normalization transformations (Unix timestamp → ISO 8601) at a centralized point. This ensures consistency across all tools without burdening the agent with format handling.', 
+                feedback: 'CORRECT! A `PostToolUse` hook intercepts tool results before the agent processes them, applying normalization transformations (Unix timestamp → ISO 8601) at a centralized point.' 
+, 
                 theory: 'Theory: Domain 1.5 - PostToolUse hooks for data normalization' 
             },
             question10: { 
                 correct: 'c', 
-                feedback: 'CORRECT! Forced tool selection (`tool_choice: {"type": "tool", "name": "extract_metadata"}`) makes it architecturally impossible to skip the first step. The model must call `extract_metadata` before it can proceed to other tools, guaranteeing correct sequencing.', 
+                feedback: 'CORRECT! Forced tool selection (`tool_choice: {"type": "tool", "name": "extract_metadata"}`) makes it architecturally impossible to skip the first step. The model must call it before proceeding.' 
+, 
                 theory: 'Theory: Chapter 2.3 - tool_choice parameter and forced selection' 
             }
         };
         
-        function checkAnswer(questionId, correctAnswer) {
+        function checkAnswer(questionId) {
             const radioButton = document.querySelector(`input[name="${questionId}"]:checked`);
             
             if (!radioButton) {
@@ -706,7 +716,7 @@
                 `;
             }
             
-            // Disable the option after answering
+            // Disable the options after answering
             document.querySelectorAll(`input[name="${questionId}"]`).forEach(radio => {
                 radio.disabled = true;
             });

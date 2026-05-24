@@ -19,12 +19,12 @@
 **Title:** Subagent Isolation and Task Specificity
 **Situation:** You spawn a subagent with the prompt: "Do research about climate change." The subagent produces a 300K-token comprehensive report. But you only need specific information (CO2 emission trends). How to fix this?
 **Options:**
-- A) Use specific task prompts: "Research CO2 emission trends from 2015-2025, focusing on industrial sources. Provide concise summary." Specificity reduces noise
-- B) Accept the 300K tokens; that's what research produces
+- A) Accept the 300K tokens; that's what research produces
+- B) Use specific task prompts: "Research CO2 emission trends from 2015-2025, focusing on industrial sources. Provide concise summary." Specificity reduces noise
 - C) Post-process results to filter for relevant information
 - D) Use a different subagent with better data filtering
 
-**Correct Answer:** A
+**Correct Answer:** B
 **Feedback:** Task specificity drives subagent output quality and conciseness. Vague prompts ("do research") produce unfocused output. Specific prompts ("research CO2 trends 2015-2025, industrial sources, 1-page summary") constrain scope and reduce token waste.
 **Theory Reference:** Domain 1.2 - Task specificity and subagent prompts
 
@@ -34,12 +34,12 @@
 **Title:** Handling Partial Results from Subagents
 **Situation:** A fact-checking subagent checks 10 claims. It finds definitive answers for 7, but 3 claims lack sufficient information to verify. Should it report all 10 with confidence levels, or only the 7 verified claims?
 **Options:**
-- A) Report all 10 with confidence levels (high for verified, low/unclear for insufficient data) and explicit gaps. Enables informed coordinator decisions
+- A) Retry checking the 3 unclear claims to find definitive answers
 - B) Report only the 7 verified claims; don't include incomplete information
-- C) Retry checking the 3 unclear claims to find definitive answers
+- C) Report all 10 with confidence levels (high for verified, low/unclear for insufficient data) and explicit gaps. Enables informed coordinator decisions
 - D) Escalate the unclear ones to a human immediately
 
-**Correct Answer:** A
+**Correct Answer:** C
 **Feedback:** Partial results are valuable. Report what you found, confidence levels, and gaps. Coordinator needs to know: "7 claims verified, 3 lack sufficient data." This enables decisions: confirm via alternative sources or accept the gap. Hiding gaps is worse than reporting them.
 **Theory Reference:** Domain 5.1 & 5.3 - Handling incomplete information
 
@@ -49,12 +49,12 @@
 **Title:** `.claude/rules/` Organization
 **Situation:** Your project has conventions for testing (Jest, Vitest, Playwright), API design (REST, GraphQL), and deployment (Docker, Kubernetes). How should these be organized in `.claude/rules/`?
 **Options:**
-- A) Separate files: `.claude/rules/testing.md`, `.claude/rules/api-design.md`, `.claude/rules/deployment.md` with appropriate `paths` frontmatter. Modular approach
+- A) Create CLAUDE.md files in each relevant directory
 - B) Keep everything in one monolithic `.claude/rules/conventions.md` for simplicity
 - C) Store conventions in project documentation outside `.claude/`
-- D) Create CLAUDE.md files in each relevant directory
+- D) Separate files: `.claude/rules/testing.md`, `.claude/rules/api-design.md`, `.claude/rules/deployment.md` with appropriate `paths` frontmatter. Modular approach
 
-**Correct Answer:** A
+**Correct Answer:** D
 **Feedback:** Multiple focused rule files are more maintainable than one monolithic file. Each `.claude/rules/*.md` file can have specific `paths` patterns (e.g., `paths: ["**/*.test.*"]` for testing). Modular = easier updates and clearer ownership.
 **Theory Reference:** Domain 3.1 & 3.3 - Modular CLAUDE.md organization
 
@@ -79,12 +79,12 @@
 **Title:** Escalation with Rich Context
 **Situation:** A customer requests a refund for a $5000 purchase. Your agent cannot approve refunds over $1000 (policy boundary). When escalating to a manager, what context should be included?
 **Options:**
-- A) Structured escalation: customer ID, order ID, amount ($5000), customer history (5-year member, no prior disputes), reason (product defective), agent's assessment (legitimate claim), recommendation
-- B) Just pass the request: "Customer wants refund"
+- A) Just pass the request: "Customer wants refund"
+- B) Structured escalation: customer ID, order ID, amount ($5000), customer history (5-year member, no prior disputes), reason (product defective), agent's assessment (legitimate claim), recommendation
 - C) Include only what policy explicitly requires
 - D) Don't escalate; deny the request to enforce the policy
 
-**Correct Answer:** A
+**Correct Answer:** B
 **Feedback:** Escalations with rich context enable faster, better decisions. Include: who (customer ID), what (order, amount), why (reason, agent assessment), history (relevant context), and recommendation. Rich context = fast, informed manager decision; poor context = delays.
 **Theory Reference:** Domain 1.4 & 5.2 - Structured escalation protocols
 
@@ -94,12 +94,12 @@
 **Title:** Semantic vs Syntactic Validation
 **Situation:** A form extraction tool outputs: `{"date_field": "2024-13-45", "amount": 100, "total": 50}`. JSON syntax is valid. But: invalid date (no 13th month), amount > total (illogical). Which type of error is each?
 **Options:**
-- A) Date error is semantic (invalid date), amount error is semantic (contradiction). Both exceed JSON schema capabilities
+- A) Date error is syntactic (bad format), amount error is semantic (violates logic)
 - B) Both are JSON syntax errors
-- C) Date error is syntactic (bad format), amount error is semantic (violates logic)
+- C) Date error is semantic (invalid date), amount error is semantic (contradiction). Both exceed JSON schema capabilities
 - D) Neither are errors; values are just unusual
 
-**Correct Answer:** A
+**Correct Answer:** C
 **Feedback:** JSON schema validates syntax (valid JSON structure). Semantic validation checks business logic (date is valid, total >= amount). "2024-13-45" passes JSON schema but fails date semantics. Both errors require domain-specific validation beyond schema.
 **Theory Reference:** Domain 4.4 - Semantic vs syntax errors
 
@@ -109,12 +109,12 @@
 **Title:** Prioritizing Subagent Work
 **Situation:** Your coordinator has 5 research tasks. Three are high-priority (impacts immediate decision), two are low-priority (future reference). Spawning all 5 simultaneously takes 20 minutes total. Spawning high-priority first takes 12 minutes. What's the best strategy?
 **Options:**
-- A) Spawn high-priority first, collect results, make decision, then spawn low-priority if time permits
+- A) Spawn one at a time based on importance
 - B) Spawn all 5 in parallel; parallel processing is fastest overall
 - C) Spawn low-priority first to warm up the system
-- D) Spawn one at a time based on importance
+- D) Spawn high-priority first, collect results, make decision, then spawn low-priority if time permits
 
-**Correct Answer:** A
+**Correct Answer:** D
 **Feedback:** Prioritization enables faster decisions when time is constrained. High-priority tasks don't wait for low-priority ones. Coordinator gets critical insights faster (12 min vs 20 min), makes decisions, then optionally gathers low-priority context.
 **Theory Reference:** Domain 1.2 - Prioritized task spawning
 
@@ -139,11 +139,11 @@
 **Title:** Combining Few-shot with Explicit Criteria
 **Situation:** You want Claude to categorize customer feedback as positive, negative, or neutral. You provide: (1) explicit criteria ("positive: mentions benefits; negative: complaints; neutral: no clear sentiment") and (2) three labeled examples. Is this redundant?
 **Options:**
-- A) Yes, combining explicit criteria + targeted examples handles ambiguous cases better than either alone
-- B) Redundant; use only criteria
+- A) Redundant; use only criteria
+- B) Yes, combining explicit criteria + targeted examples handles ambiguous cases better than either alone
 - C) Redundant; use only examples
 - D) Combining reduces clarity
 
-**Correct Answer:** A
+**Correct Answer:** B
 **Feedback:** Explicit criteria define the categories. Few-shot examples demonstrate how to apply criteria to ambiguous cases. Together, they're more effective than separately. Examples show interpretation; criteria show intent. Complementary, not redundant.
 **Theory Reference:** Domain 4.1 & 4.2 - Combining criteria and few-shot examples

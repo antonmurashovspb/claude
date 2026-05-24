@@ -49,12 +49,12 @@
 **Title:** Agent Specialization vs Generalization
 **Situation:** You have a general "customer support" agent handling refunds, billing questions, technical support, and account issues. It's 40% effective at each. You consider splitting into specialized agents. Would specialization help?
 **Options:**
-- A) Split into specialized agents; focused agents are more reliable and can maintain specialized knowledge
-- B) Keep one general agent; splitting adds complexity without proven benefit
+- A) Keep one general agent; splitting adds complexity without proven benefit
+- B) Split into specialized agents; focused agents are more reliable and can maintain specialized knowledge
 - C) One agent is fine; just add more tools to improve performance
 - D) Keep one agent but provide better training data
 
-**Correct Answer:** A
+**Correct Answer:** B
 **Feedback:** Specialized agents outperform generalists. A refund agent with refund-specific tools and context is more effective (80%+) than a general agent splitting attention (40%). Hub-and-spoke architecture enables better performance and easier maintenance.
 **Theory Reference:** Domain 1.2 - Specialized subagents vs generalists
 
@@ -64,12 +64,12 @@
 **Title:** Tool Results and Long Conversation History
 **Situation:** An agent makes 50 tool calls over 20 iterations. Each result (average 500 tokens) is appended to history. After 50 calls, the conversation is 25K tokens of tool results + reasoning. Performance degrades significantly. Why?
 **Options:**
-- A) Context degradation: long conversations lose coherence. Use subagents or scratchpads to reset context
-- B) The model needs a better system prompt to maintain focus
+- A) The model needs a better system prompt to maintain focus
+- B) Context degradation: long conversations lose coherence. Use subagents or scratchpads to reset context
 - C) Conversation history accumulation is normal; ignore performance decline
 - D) Increase the context window size to process longer histories
 
-**Correct Answer:** A
+**Correct Answer:** B
 **Feedback:** Long conversation histories degrade model performance. After 20-30 iterations, coherence starts declining. Mitigation: spawn subagents for specific subtasks (isolated context), use scratchpads for intermediate findings, or restart with key findings summarized.
 **Theory Reference:** Domain 5.4 - Context degradation and subagent delegation
 
@@ -79,12 +79,12 @@
 **Title:** Empty Results vs Access Failures in Search
 **Situation:** Two search subagents return: (1) `{"results": [], "query_executed": true, "query": "solar adoption 2024"}` - query succeeded, zero matches; (2) `{"results": null, "error": "Database connection timeout"}` - access failure. Are these equivalent?
 **Options:**
-- A) (1) is a valid result (no matches found), continue. (2) is an access failure, retry or escalate
-- B) Both represent "no data available"; treat them identically
+- A) Both represent "no data available"; treat them identically
+- B) (1) is a valid result (no matches found), continue. (2) is an access failure, retry or escalate
 - C) Both are errors; escalate both to a human
 - D) Ignore both and continue processing
 
-**Correct Answer:** A
+**Correct Answer:** B
 **Feedback:** Structured results distinguish success from failure. Query succeeded but zero matches is valid (no articles on that topic). Database unavailable is a failure (different handling—retry or escalate). Confusing these breaks decision logic.
 **Theory Reference:** Domain 5.3 - Distinguishing access failures from empty results
 
@@ -94,12 +94,12 @@
 **Title:** Multi-turn Tool Use in Batch API
 **Situation:** You're using the Batch API to process 1000 documents overnight. Your processing logic requires multi-turn tool use: (1) extract data, (2) validate, (3) if validation fails, retry extraction. Does Batch API support this?
 **Options:**
-- A) No, Batch API does not support multi-turn tool use within a single request
+- A) Only for up to 3 tool calls per request
 - B) Yes, Batch API fully supports multi-turn interactions
-- C) Only for up to 3 tool calls per request
+- C) No, Batch API does not support multi-turn tool use within a single request
 - D) Batch API doesn't support tools at all
 
-**Correct Answer:** A
+**Correct Answer:** C
 **Feedback:** Batch API is designed for single-turn requests. Multi-turn logic (where each response determines the next action) is not supported. For multi-turn workflows, use the synchronous API with tool use, or pre-process documents with single-turn extraction.
 **Theory Reference:** Domain 4.5 & Chapter 7 - Batch API limitations
 
@@ -109,12 +109,12 @@
 **Title:** Tool Selection with Ambiguous Descriptions
 **Situation:** You have tools: `search` and `retrieve`. Both can access documents. Description for `search`: "Find documents." Description for `retrieve`: "Get documents." An agent frequently uses the wrong tool. Why?
 **Options:**
-- A) The descriptions are identical in function; differentiate them. Is `search` for keyword-based lookup? Is `retrieve` for fetching by ID?
+- A) Use a parameter to distinguish; combine both into one tool
 - B) The agent needs better training data
-- C) Use a parameter to distinguish; combine both into one tool
+- C) The descriptions are identical in function; differentiate them. Is `search` for keyword-based lookup? Is `retrieve` for fetching by ID?
 - D) Combine the tools into a single, more general tool
 
-**Correct Answer:** A
+**Correct Answer:** C
 **Feedback:** Ambiguous descriptions cause unreliable selection. "Find documents" (search) and "Get documents" (retrieve) sound interchangeable. Clarify: "search: Find documents by keyword/content match. retrieve: Fetch documents by ID." Distinct, clear descriptions prevent confusion.
 **Theory Reference:** Domain 2.1 - Clear, distinct tool descriptions
 
@@ -124,12 +124,12 @@
 **Title:** Coordinator Role in Error Handling
 **Situation:** A subagent encounters a temporary API error and implements local retry logic (3 retries with backoff). If all retries fail, what should the subagent do?
 **Options:**
-- A) Return structured error to the coordinator: failure type, what was attempted, whether retry was tried. Let the coordinator decide next steps
-- B) Silently fail and return empty results; don't bother the coordinator
-- C) Implement infinite retries until the API responds
-- D) Escalate immediately to a human without context
+- A) Silently fail and return empty results; don't bother the coordinator
+- B) Implement infinite retries until the API responds
+- C) Escalate immediately to a human without context
+- D) Return structured error to the coordinator: failure type, what was attempted, whether retry was tried. Let the coordinator decide next steps
 
-**Correct Answer:** A
+**Correct Answer:** D
 **Feedback:** Subagents should attempt local recovery (retry transient errors). If recovery fails, report structured error to the coordinator: what failed, was retry attempted, why it failed. The coordinator then decides: retry differently, escalate, skip, or notify user.
 **Theory Reference:** Domain 5.3 & 1.2 - Error propagation and coordinator oversight
 
@@ -139,11 +139,11 @@
 **Title:** Batching vs Sequential Tool Calls
 **Situation:** An agent needs to fetch 10 user profiles. Option 1: Call `fetch_profile` 10 times sequentially. Option 2: Batch all 10 into one call with an MCP resource or batch-capable tool. Which is more efficient?
 **Options:**
-- A) Batch all 10 in one call; MCP resources handle concurrency, reducing total calls and latency
-- B) Sequential is simpler and easier to understand
-- C) Both are equally efficient; choose based on preference
-- D) Sequential is actually faster due to reduced network overhead
+- A) Sequential is simpler and easier to understand
+- B) Both are equally efficient; choose based on preference
+- C) Sequential is actually faster due to reduced network overhead
+- D) Batch all 10 in one call; MCP resources handle concurrency, reducing total calls and latency
 
-**Correct Answer:** A
+**Correct Answer:** D
 **Feedback:** Batching reduces API calls and latency. If an MCP resource or tool supports batch operations, use it. One call for 10 profiles is more efficient than 10 sequential calls. Batching enables parallelization and reduces overhead.
 **Theory Reference:** Domain 2.4 - MCP resource batching

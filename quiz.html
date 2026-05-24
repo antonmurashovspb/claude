@@ -41,6 +41,13 @@
             box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
         }
         
+        .loading {
+            text-align: center;
+            padding: 40px;
+            font-size: 1.1em;
+            color: #667eea;
+        }
+        
         .question-block {
             margin-bottom: 40px;
             padding-bottom: 40px;
@@ -247,122 +254,152 @@
             <p>Test your knowledge across all domains</p>
         </div>
         
-        <div id="quizContainer" class="quiz-container"></div>
+        <div id="quizContainer" class="quiz-container">
+            <div class="loading">Loading questions...</div>
+        </div>
     </div>
     
     <script>
-        const quizData = [
-            {
-                id: 1,
-                title: "Programmatic Enforcement vs Prompt Guidance",
-                situation: "You have a customer support agent with tools: `get_customer`, `lookup_order`, and `process_refund`. Currently, the system prompt instructs the agent to 'always verify customer identity before processing refunds.' However, production logs show 5% of refunds are processed without proper verification.",
-                options: ["Add more detailed prompt instructions emphasizing the importance of verification", "Implement a programmatic precondition that blocks `process_refund` until `get_customer` returns a verified customer ID", "Add few-shot examples showing correct verification patterns", "Reduce the agent's toolset to remove `process_refund` capability"],
-                correct: 1,
-                feedback: "CORRECT! When business rules require guaranteed compliance (like financial operations), prompts provide only probabilistic compliance (>90%). Programmatic preconditions provide deterministic guarantees (100%). A hook-based approach ensures the rule cannot be bypassed.",
-                theory: "Domain 1.4 & 1.5 - Programmatic enforcement vs prompt guidance"
-            },
-            {
-                id: 2,
-                title: "CLAUDE.md Hierarchy and Project Configuration",
-                situation: "Your team just hired a new developer. They cloned the repository and started using Claude Code. The original team members follow specific testing conventions and API patterns. The new developer does not see these instructions and writes code that violates project standards. Investigation shows the standards were placed in `~/.claude/CLAUDE.md` on the original developers' machines.",
-                options: ["Have the new developer manually copy the instructions to their `~/.claude/CLAUDE.md`", "Move the standards to `.claude/CLAUDE.md` in the repository so all team members automatically receive them", "Add the standards to the root `CLAUDE.md` and instruct the new developer to merge them with their user config", "Create directory-level CLAUDE.md files in each subdirectory containing relevant standards"],
-                correct: 1,
-                feedback: "CORRECT! Project-level CLAUDE.md (`.claude/CLAUDE.md` or root) is automatically available to all team members when they clone the repository via version control. User-level configs are not shared and only apply to individual developers.",
-                theory: "Domain 3.1 - CLAUDE.md hierarchy: user, project, and directory levels"
-            },
-            {
-                id: 3,
-                title: "Tool Allocation and Specialization",
-                situation: "You have a document analysis subagent that specializes in parsing PDFs and extracting structured data. You notice it frequently misuses `fetch_url` to fetch arbitrary web pages instead of focusing on document analysis. The tool was intended to download referenced documents by URL.",
-                options: ["Remove `fetch_url` entirely and have the coordinator handle all URL fetching", "Replace the general-purpose `fetch_url` with a specialized `load_document` tool that validates URLs point to document formats (PDF, DOCX, etc.)", "Add detailed instructions to the agent prompt restricting `fetch_url` usage to document URLs only", "Implement a filter that blocks `fetch_url` calls to known search engine domains"],
-                correct: 1,
-                feedback: "CORRECT! Replacing a general-purpose tool with a specialized one fixes the root cause by constraining capability at the interface level. A `load_document` tool that validates URLs prevents misuse for arbitrary web fetching.",
-                theory: "Domain 2.3 - Tool allocation and specialized alternatives"
-            },
-            {
-                id: 4,
-                title: "Prompt Chaining vs Dynamic Decomposition",
-                situation: "Your system performs automated code reviews on pull requests. You have two approaches to consider: (1) a fixed sequence—analyze each file for local issues, then run a separate integration pass for cross-file concerns, or (2) generate subtasks dynamically based on what the system discovers (e.g., if circular dependencies are found, prioritize analyzing them).",
-                options: ["Always use dynamic decomposition because it adapts to the actual code structure", "Use prompt chaining (fixed pipeline) because code reviews follow a predictable structure; each file is analyzed separately, then integration pass catches cross-file issues", "Use dynamic decomposition only for large PRs (20+ files); use prompt chaining for smaller PRs", "Use prompt chaining but allow the model to skip steps if it considers them unnecessary"],
-                correct: 1,
-                feedback: "CORRECT! Prompt chaining is ideal for predictable, repeatable tasks like code reviews where the structure is always known up front (per-file analysis → integration pass). Dynamic decomposition is better for open-ended investigations.",
-                theory: "Domain 1.6 & Chapter 8.1-8.2 - Task decomposition strategies"
-            },
-            {
-                id: 5,
-                title: "Few-shot Prompting for Ambiguous Scenarios",
-                situation: "Your customer support agent frequently mishandles ambiguous customer requests. When a customer says 'I want to speak to a manager,' the agent sometimes attempts to resolve the issue first. When a customer says 'My item is broken,' the agent sometimes escalates immediately instead of investigating the order details first.",
-                options: ["Improve the system prompt with more explicit rules for escalation", "Add 3-4 few-shot examples that demonstrate the distinction: 'I want to speak to a manager' → escalate immediately; 'My item is broken' → investigate order first, then escalate if needed", "Split the agent into two separate agents—one for escalations and one for investigations", "Use sentiment analysis to determine when to escalate vs investigate"],
-                correct: 1,
-                feedback: "CORRECT! Few-shot examples targeting ambiguous scenarios with explicit rationale (why escalate here vs investigate there) directly teaches the model the distinction. This is more effective than vague rules.",
-                theory: "Domain 4.2 - Few-shot prompting for ambiguous cases"
-            },
-            {
-                id: 6,
-                title: "Lost-in-the-middle Effect and Context Organization",
-                situation: "You are synthesizing research from multiple sources into a final report. The coordinator has collected results from three subagents: web search (returned 80K tokens), document analysis (returned 70K tokens), and fact verification (returned 20K tokens). The synthesis agent reliably cites information from the first and last sections but frequently misses findings from the middle sections.",
-                options: ["Summarize all sections to under 50K tokens to keep content within reliable processing range", "Place a key-findings summary at the beginning and organize the rest with explicit section headings to counteract the lost-in-the-middle effect", "Run the synthesis in three separate passes—one for each subagent's results", "Store the full results in a vector database and have the synthesis agent query it on demand"],
-                correct: 1,
-                feedback: "CORRECT! The lost-in-the-middle effect causes models to miss content in the middle of long inputs. Placing a key-findings summary at the beginning (primacy effect) and using explicit headings mitigates this.",
-                theory: "Domain 5.1 & Chapter 1.5 - Lost-in-the-middle effect and context positioning"
-            },
-            {
-                id: 7,
-                title: "Skills and Context Isolation",
-                situation: "Your team created a `/dependency-map` skill that analyzes the full codebase structure, generates dependency graphs, identifies circular dependencies, and outputs a 150K-token report with visualizations and detailed explanations. After running the skill, developers report they lose track of their original task because the verbose output fills the context window.",
-                options: ["Tell developers to manually summarize the output before continuing", "Add `context: fork` in the skill's SKILL.md frontmatter to run it in an isolated subagent context", "Split the skill into multiple smaller skills, each producing less output", "Instruct the skill to compress all output into a one-paragraph summary"],
-                correct: 1,
-                feedback: "CORRECT! `context: fork` runs the skill in an isolated subagent context so its verbose output does not pollute the main session history. The developer retains focus on their original task.",
-                theory: "Domain 3.2 - Skills with context: fork for isolated execution"
-            },
-            {
-                id: 8,
-                title: "Structured Error Context and Recovery Decisions",
-                situation: "A document analysis subagent encounters a corrupted PDF file and returns: `{\"isError\": true, \"content\": \"File parsing failed\"}`. The coordinator receives this response but does not know whether to retry with a different approach, skip the file and continue, or request the user provide the file in a different format.",
-                options: ["Assume all file parsing errors are transient; implement automatic retry with exponential backoff", "Return structured error context: failure type (corruption), what was attempted (PDF parsing), whether it is retryable, and alternatives (convert to another format, manually review)", "Have the subagent silently skip the corrupted file and return an empty result marked as success", "Immediately escalate to a human when any file parsing error occurs"],
-                correct: 1,
-                feedback: "CORRECT! Structured error context (failure type, attempted action, retryability, alternatives) enables the coordinator to make intelligent recovery decisions. Generic errors provide no actionable information.",
-                theory: "Domain 5.3 & Chapter 10.2 - Error propagation strategies"
-            },
-            {
-                id: 9,
-                title: "PostToolUse Hooks and Data Normalization",
-                situation: "Your agent uses three different MCP tools that return dates in different formats: Unix timestamps (1704067200), ISO 8601 dates (2024-01-01), and human-readable strings (January 1, 2024). The agent produces inconsistent output because it treats these formats differently and sometimes fails to compare or order dates correctly.",
-                options: ["Add detailed instructions to the system prompt explaining date format differences and how to normalize them", "Implement a `PostToolUse` hook that intercepts tool results and normalizes all dates to ISO 8601 format before the agent processes them", "Create wrapper tools for each MCP server that normalize outputs before returning them", "Have the agent call a separate `normalize_dates` tool after each data retrieval"],
-                correct: 1,
-                feedback: "CORRECT! A `PostToolUse` hook intercepts tool results before the agent processes them, applying normalization transformations (Unix timestamp → ISO 8601) at a centralized point.",
-                theory: "Domain 1.5 - PostToolUse hooks for data normalization"
-            },
-            {
-                id: 10,
-                title: "tool_choice Parameter and Forced Selection",
-                situation: "You have a data extraction system with multiple extraction tools: `extract_invoice`, `extract_receipt`, and `extract_statement`. You want to ensure that the model first calls `extract_metadata` to determine the document type before calling any of the specialized extraction tools.",
-                options: ["Use `tool_choice: \"auto\"` and add instructions to always extract metadata first", "Use `tool_choice: \"any\"` to force the model to call some tool, then let it choose", "Use forced tool selection: `tool_choice: {\"type\": \"tool\", \"name\": \"extract_metadata\"}` to guarantee `extract_metadata` is called first", "Remove the specialized extraction tools and use only `extract_metadata` with a type parameter"],
-                correct: 2,
-                feedback: "CORRECT! Forced tool selection (`tool_choice: {\"type\": \"tool\", \"name\": \"extract_metadata\"}`) makes it architecturally impossible to skip the first step. The model must call it before proceeding.",
-                theory: "Chapter 2.3 - tool_choice parameter and forced selection"
-            }
-        ];
-
+        // Question bank will be populated from fetched markdown files
+        let questionBank = [];
+        let currentQuizQuestions = [];
         let currentAnswers = {};
+
+        // Parse markdown question format
+        function parseMarkdownQuestions(markdown) {
+            const questions = [];
+            
+            // Split by "## Question" to identify question blocks
+            const questionBlocks = markdown.split(/## Question \d+/).slice(1);
+            
+            questionBlocks.forEach((block, blockIndex) => {
+                try {
+                    // Extract title (first line after ## Question N)
+                    const titleMatch = block.match(/\*\*Title:\*\*\s*(.+?)(?:\n|$)/);
+                    const title = titleMatch ? titleMatch[1].trim() : `Question ${blockIndex + 1}`;
+                    
+                    // Extract situation
+                    const situationMatch = block.match(/\*\*Situation:\*\*\s*(.+?)(?=\*\*Options:\*\*)/s);
+                    const situation = situationMatch ? situationMatch[1].trim().replace(/\[...\]/g, '').slice(0, 500) : '';
+                    
+                    // Extract options
+                    const optionsMatch = block.match(/\*\*Options:\*\*\s*([\s\S]+?)(?=\*\*Correct Answer:\*\*)/);
+                    if (!optionsMatch) return;
+                    
+                    const optionsText = optionsMatch[1];
+                    const options = [];
+                    const optionRegex = /- [A-Z]\)\s*(.+?)(?=- [A-Z]\)|$)/gs;
+                    let match;
+                    
+                    while ((match = optionRegex.exec(optionsText)) !== null) {
+                        options.push(match[1].trim().replace(/\*\*\[CORRECT\]\*\*/g, ''));
+                    }
+                    
+                    // Extract correct answer
+                    const correctMatch = block.match(/\*\*Correct Answer:\*\*\s*([A-D])/);
+                    const correctLetter = correctMatch ? correctMatch[1] : 'A';
+                    const correctIdx = correctLetter.charCodeAt(0) - 65; // Convert A=0, B=1, C=2, D=3
+                    
+                    // Extract feedback
+                    const feedbackMatch = block.match(/\*\*Feedback:\*\*\s*(.+?)(?=\*\*Theory Reference:\*\*|$)/s);
+                    const feedback = feedbackMatch ? feedbackMatch[1].trim().replace(/\[...\]/g, '').slice(0, 300) : '';
+                    
+                    // Extract theory reference
+                    const theoryMatch = block.match(/\*\*Theory Reference:\*\*\s*(.+?)(?:\n|$)/);
+                    const theory = theoryMatch ? theoryMatch[1].trim() : '';
+                    
+                    // Only add if we have at least 3 options
+                    if (options.length >= 3) {
+                        questions.push({
+                            id: questionBank.length + questions.length + 1,
+                            title: title,
+                            situation: situation,
+                            options: options,
+                            correct: correctIdx,
+                            feedback: feedback,
+                            theory: theory
+                        });
+                    }
+                } catch (e) {
+                    console.error('Error parsing question:', e);
+                }
+            });
+            
+            return questions;
+        }
+
+        // Fetch and parse all question files
+        async function loadQuestions() {
+            try {
+                // Files to fetch
+                const files = [
+                    'questions.md',
+                    'quiz_questions_batch_01.md',
+                    'quiz_questions_batch_02.md',
+                    'quiz_questions_batch_03.md',
+                    'quiz_questions_batch_04.md',
+                    'quiz_questions_batch_05.md',
+                    'quiz_questions_batch_06.md'
+                ];
+                
+                for (const file of files) {
+                    try {
+                        const response = await fetch(file);
+                        if (response.ok) {
+                            const markdown = await response.text();
+                            const questions = parseMarkdownQuestions(markdown);
+                            questionBank = questionBank.concat(questions);
+                        }
+                    } catch (e) {
+                        console.warn(`Could not load ${file}:`, e);
+                    }
+                }
+                
+                console.log(`Loaded ${questionBank.length} questions from all files`);
+                
+                // Start the quiz with random questions
+                selectRandomQuestions();
+                renderQuiz();
+            } catch (error) {
+                console.error('Error loading questions:', error);
+                document.getElementById('quizContainer').innerHTML = 
+                    '<div class="loading">Error loading questions. Please refresh the page.</div>';
+            }
+        }
+
+        // Select 10 random questions for the current quiz
+        function selectRandomQuestions() {
+            if (questionBank.length === 0) return;
+            
+            const quizSize = Math.min(10, questionBank.length);
+            const shuffled = [...questionBank].sort(() => Math.random() - 0.5);
+            currentQuizQuestions = shuffled.slice(0, quizSize);
+            currentAnswers = {};
+        }
 
         function renderQuiz() {
             const container = document.getElementById('quizContainer');
+            
+            if (currentQuizQuestions.length === 0) {
+                container.innerHTML = '<div class="loading">No questions available. Please refresh.</div>';
+                return;
+            }
+            
             let html = '';
 
-            quizData.forEach(question => {
+            currentQuizQuestions.forEach((question, index) => {
                 html += `
                     <div class="question-block">
-                        <div class="question-number">Question ${question.id} of ${quizData.length}</div>
-                        <div class="question-text">${question.title}</div>
+                        <div class="question-number">Question ${index + 1} of ${currentQuizQuestions.length}</div>
+                        <div class="question-text">${escapeHtml(question.title)}</div>
                         <div class="situation">
-                            <strong>Situation:</strong> ${question.situation}
+                            <strong>Situation:</strong> ${escapeHtml(question.situation)}
                         </div>
                         <div class="options">
                             ${question.options.map((opt, idx) => `
                                 <div class="option">
                                     <input type="radio" id="q${question.id}_${idx}" name="q${question.id}" value="${idx}">
-                                    <label for="q${question.id}_${idx}">${String.fromCharCode(65 + idx)}) ${opt}</label>
+                                    <label for="q${question.id}_${idx}">${String.fromCharCode(65 + idx)}) ${escapeHtml(opt)}</label>
                                 </div>
                             `).join('')}
                         </div>
@@ -390,8 +427,14 @@
             container.innerHTML = html;
         }
 
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+
         function submitAnswer(questionId) {
-            const question = quizData.find(q => q.id === questionId);
+            const question = currentQuizQuestions.find(q => q.id === questionId);
             const selected = document.querySelector(`input[name="q${questionId}"]:checked`);
 
             if (!selected) {
@@ -423,7 +466,7 @@
             event.target.style.opacity = '0.5';
 
             // Check if all questions answered
-            if (Object.keys(currentAnswers).length === quizData.length) {
+            if (Object.keys(currentAnswers).length === currentQuizQuestions.length) {
                 setTimeout(showScore, 500);
             }
         }
@@ -431,37 +474,26 @@
         function showScore() {
             let correct = 0;
             Object.entries(currentAnswers).forEach(([qId, answer]) => {
-                const question = quizData.find(q => q.id === parseInt(qId));
+                const question = currentQuizQuestions.find(q => q.id === parseInt(qId));
                 if (answer === question.correct) {
                     correct++;
                 }
             });
 
-            const percentage = Math.round((correct / quizData.length) * 100);
+            const percentage = Math.round((correct / currentQuizQuestions.length) * 100);
             document.getElementById('scoreValue').textContent = `${percentage}%`;
-            document.getElementById('scoreMessage').textContent = `You got ${correct} out of ${quizData.length} questions correct!`;
+            document.getElementById('scoreMessage').textContent = `You got ${correct} out of ${currentQuizQuestions.length} questions correct!`;
             document.getElementById('scoreSection').classList.add('show');
         }
 
         function resetQuiz() {
-            currentAnswers = {};
-            document.querySelectorAll('input[type="radio"]').forEach(radio => {
-                radio.disabled = false;
-                radio.checked = false;
-            });
-            document.querySelectorAll('.feedback').forEach(fb => {
-                fb.classList.remove('show', 'correct', 'incorrect');
-            });
-            document.querySelectorAll('button.btn-submit').forEach(btn => {
-                btn.disabled = false;
-                btn.style.opacity = '1';
-            });
-            document.getElementById('scoreSection').classList.remove('show');
+            selectRandomQuestions();
+            renderQuiz();
             window.scrollTo(0, 0);
         }
 
-        // Initialize on load
-        renderQuiz();
+        // Load questions on page load
+        window.addEventListener('DOMContentLoaded', loadQuestions);
     </script>
 </body>
 </html>

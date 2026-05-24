@@ -19,7 +19,7 @@
         }
         
         .container {
-            max-width: 900px;
+            max-width: 1000px;
             margin: 0 auto;
         }
         
@@ -165,11 +165,60 @@
         
         .theory-reference {
             background: #fef3c7;
+            border-left: 4px solid #f59e0b;
+            padding: 16px;
             border-radius: 4px;
-            padding: 10px;
-            font-size: 0.85em;
+            margin-top: 16px;
+            font-size: 0.95em;
+        }
+        
+        .theory-title {
+            font-weight: 600;
             color: #78350f;
-            margin-top: 12px;
+            margin-bottom: 12px;
+            font-size: 1em;
+        }
+        
+        .theory-content {
+            color: #78350f;
+            line-height: 1.6;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+        
+        .theory-content h3 {
+            font-size: 0.95em;
+            font-weight: 600;
+            margin: 12px 0 8px 0;
+            color: #78350f;
+        }
+        
+        .theory-content h4 {
+            font-size: 0.9em;
+            font-weight: 600;
+            margin: 10px 0 6px 0;
+            color: #78350f;
+        }
+        
+        .theory-content ul, .theory-content ol {
+            margin-left: 16px;
+            margin-bottom: 8px;
+        }
+        
+        .theory-content li {
+            margin-bottom: 4px;
+        }
+        
+        .theory-content p {
+            margin-bottom: 8px;
+        }
+        
+        .theory-content code {
+            background: #fcd34d;
+            padding: 2px 4px;
+            border-radius: 2px;
+            font-family: monospace;
+            font-size: 0.9em;
         }
         
         .button-group {
@@ -264,6 +313,7 @@
         let questionBank = [];
         let currentQuizQuestions = [];
         let currentAnswers = {};
+        let theoryContent = {};
 
         // Parse markdown question format
         function parseMarkdownQuestions(markdown) {
@@ -328,10 +378,61 @@
             return questions;
         }
 
+        // Extract content from theory files based on reference
+        function extractTheoryContent(reference, theoryMarkdown, domainMarkdown) {
+            if (!reference) return '';
+            
+            // Try to find the reference in the markdown
+            let content = '';
+            
+            // Parse both domain notes and theory fundamentals
+            const allContent = domainMarkdown + '\n\n---\n\n' + theoryMarkdown;
+            
+            // Extract the relevant section based on the reference
+            // E.g., "Domain 1.4 - Programmatic enforcement vs prompt guidance"
+            // or "Chapter 2.3 - tool_choice parameter and forced selection"
+            
+            const refPattern = reference.replace(/\s+/g, '\\s+').replace(/[\-\(\)]/g, '[\\-\\(\\)]?');
+            const regex = new RegExp(`(#{1,4}\\s+${refPattern}.*?)(?=\n#{1,3}\\s|$)`, 'is');
+            const match = allContent.match(regex);
+            
+            if (match) {
+                content = match[1];
+            }
+            
+            return content;
+        }
+
         // Fetch and parse all question files
         async function loadQuestions() {
             try {
-                // Files to fetch
+                // Load theory documents first
+                let theoryMarkdown = '';
+                let domainMarkdown = '';
+                
+                try {
+                    const theoryResponse = await fetch('theory_fundamentals.md');
+                    if (theoryResponse.ok) {
+                        theoryMarkdown = await theoryResponse.text();
+                    }
+                } catch (e) {
+                    console.warn('Could not load theory_fundamentals.md:', e);
+                }
+                
+                try {
+                    const domainResponse = await fetch('domain_notes.md');
+                    if (domainResponse.ok) {
+                        domainMarkdown = await domainResponse.text();
+                    }
+                } catch (e) {
+                    console.warn('Could not load domain_notes.md:', e);
+                }
+                
+                // Store for later use
+                window.theoryMarkdown = theoryMarkdown;
+                window.domainMarkdown = domainMarkdown;
+                
+                // Files to fetch for questions
                 const files = [
                     'questions.md',
                     'quiz_questions_batch_01.md',
@@ -377,6 +478,42 @@
             currentAnswers = {};
         }
 
+        // Convert markdown content to HTML (simplified)
+        function markdownToHtml(markdown) {
+            if (!markdown) return '';
+            
+            let html = markdown
+                // Headers
+                .replace(/^### (.*?)$/gm, '<h4>$1</h4>')
+                .replace(/^## (.*?)$/gm, '<h3>$1</h3>')
+                .replace(/^# (.*?)$/gm, '<h2>$1</h2>')
+                // Bold
+                .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+                .replace(/__(.*?)__/g, '<strong>$1</strong>')
+                // Italic
+                .replace(/\*(.*?)\*/g, '<em>$1</em>')
+                .replace(/_(.*?)_/g, '<em>$1</em>')
+                // Code
+                .replace(/`(.*?)`/g, '<code>$1</code>')
+                // Line breaks and paragraphs
+                .replace(/\n\n/g, '</p><p>')
+                .replace(/^/gm, '');
+            
+            // Handle lists
+            html = html.replace(/^- (.*?)$/gm, '<li>$1</li>')
+                      .replace(/(<li>.*?<\/li>)/s, '<ul>$1</ul>')
+                      .replace(/^(\d+)\. (.*?)$/gm, '<li>$1. $2</li>')
+                      .replace(/(<li>\d+\..*?<\/li>)/s, '<ol>$1</ol>');
+            
+            // Clean up
+            html = html.replace(/<\/p><p>/g, '</p><p>')
+                      .replace(/^<p><\/p>/gm, '')
+                      .replace(/<p>(<h[1-4]>)/g, '<p>$1')
+                      .replace(/(<\/h[1-4]>)<\/p>/g, '<h1>');
+            
+            return '<p>' + html + '</p>';
+        }
+
         function renderQuiz() {
             const container = document.getElementById('quizContainer');
             
@@ -409,7 +546,10 @@
                         <div class="feedback" id="feedback-${question.id}">
                             <div class="feedback-title"></div>
                             <div class="feedback-text"></div>
-                            <div class="theory-reference"></div>
+                            <div class="theory-reference">
+                                <div class="theory-title"></div>
+                                <div class="theory-content"></div>
+                            </div>
                         </div>
                     </div>
                 `;
@@ -452,7 +592,25 @@
             feedbackDiv.querySelector('.feedback-text').textContent = isCorrect 
                 ? question.feedback 
                 : `The correct answer is: ${String.fromCharCode(65 + question.correct)}. ${question.feedback}`;
-            feedbackDiv.querySelector('.theory-reference').textContent = question.theory;
+            
+            // Extract and display theory content
+            const theoryContent = extractTheoryContent(
+                question.theory,
+                window.theoryMarkdown || '',
+                window.domainMarkdown || ''
+            );
+            
+            const theoryTitleEl = feedbackDiv.querySelector('.theory-reference .theory-title');
+            const theoryContentEl = feedbackDiv.querySelector('.theory-reference .theory-content');
+            
+            theoryTitleEl.textContent = question.theory;
+            
+            if (theoryContent) {
+                // Convert markdown to HTML
+                theoryContentEl.innerHTML = markdownToHtml(theoryContent);
+            } else {
+                theoryContentEl.innerHTML = '<p><em>Theory content loading...</em></p>';
+            }
 
             feedbackDiv.classList.add('show', isCorrect ? 'correct' : 'incorrect');
 
@@ -490,6 +648,35 @@
             selectRandomQuestions();
             renderQuiz();
             window.scrollTo(0, 0);
+        }
+
+        // Helper function to extract theory
+        function extractTheoryContent(reference, theoryMarkdown, domainMarkdown) {
+            if (!reference) return '';
+            
+            const allContent = domainMarkdown + '\n\n---\n\n' + theoryMarkdown;
+            
+            // Parse reference like "Domain 1.4 - Programmatic enforcement"
+            const parts = reference.match(/^([^-]+)-\s*(.+)$/);
+            if (!parts) return '';
+            
+            const [, sectionRef, description] = parts;
+            
+            // Build regex patterns to find the section
+            const patterns = [
+                new RegExp(`^#{1,4}\\s+${sectionRef.trim()}\\b.*?(?=^#{1,4}\\s|$)`, 'mis'),
+                new RegExp(`^#{1,4}\\s+([^#]*?)${description.split(' ')[0]}.*?(?=^#{1,3}\\s|$)`, 'mis')
+            ];
+            
+            for (const pattern of patterns) {
+                const match = allContent.match(pattern);
+                if (match) {
+                    // Take first 1500 chars to keep it manageable
+                    return match[0].slice(0, 1500);
+                }
+            }
+            
+            return '';
         }
 
         // Load questions on page load

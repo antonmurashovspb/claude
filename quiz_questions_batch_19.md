@@ -1,6 +1,7 @@
-# Quiz Question Bank - Batch 19 (Questions 181-190)
+# Quiz Question Bank - Batch 19 (Questions 191-200)
 
-## Question 181
+## Question 191
+
 **Title:** Session State Preservation vs Fresh Start
 **Situation:** You're analyzing a complex codebase. After 3 hours of investigation, you discover the initial understanding was incorrect. The previous session has 50K tokens of stale findings. You need current results. Should you `--resume` the session or start fresh?
 **Options:**
@@ -15,7 +16,8 @@
 
 ---
 
-## Question 182
+## Question 192
+
 **Title:** Tool Results Accumulation and Context Efficiency
 **Situation:** Your agent calls a database tool that returns 45 fields: customer ID, name, email, phone, address, billing history (35 fields), preferences, loyalty status. Only customer ID and name are needed for the next step. What should you do?
 **Options:**
@@ -30,7 +32,8 @@
 
 ---
 
-## Question 183
+## Question 193
+
 **Title:** Preconditions vs Prompts for Multi-step Enforcement
 **Situation:** Your refund workflow requires: (1) verify customer identity, (2) check refund policy eligibility, (3) process refund. You notice step (3) sometimes runs without (1) completing. Should you use prompt guidance or a precondition hook?
 **Options:**
@@ -45,7 +48,8 @@
 
 ---
 
-## Question 184
+## Question 194
+
 **Title:** Required vs Optional Fields in Extraction Schemas
 **Situation:** You design an extraction tool to identify key contacts from documents. Sometimes the document includes emails and phone numbers, sometimes only names. If you mark email and phone as required fields in the schema, what happens when they are absent?
 **Options:**
@@ -60,7 +64,8 @@
 
 ---
 
-## Question 185
+## Question 195
+
 **Title:** Adaptive vs Fixed Task Decomposition
 **Situation:** You need to process 100 legal documents: extract claims, identify risks, recommend actions. Should you pre-define 3 sequential stages (extract → assess → recommend) or generate stages dynamically based on each document's characteristics?
 **Options:**
@@ -75,7 +80,8 @@
 
 ---
 
-## Question 186
+## Question 196
+
 **Title:** Vector Database vs Raw Context Passing for Coordinator Aggregation
 **Situation:** Your coordinator spawns 8 subagents researching different market segments. Each returns 12K tokens. The coordinator must synthesize findings into a market analysis. Budget allows either (A) raw context passing of all 96K tokens or (B) vector DB storage with semantic search. Which is better?
 **Options:**
@@ -90,7 +96,8 @@
 
 ---
 
-## Question 187
+## Question 197
+
 **Title:** Tool Specialization Impact on Selection Reliability
 **Situation:** Your document system offers two options: (1) three specialized tools (`extract_pdf_text`, `extract_image_text`, `extract_docx_text`) or (2) one general tool `extract_document_text` with a `format` parameter. Testing shows agents misselect the parameter frequently. Which design is more reliable?
 **Options:**
@@ -105,7 +112,8 @@
 
 ---
 
-## Question 188
+## Question 198
+
 **Title:** PreToolUse vs PostToolUse Hook Placement Strategy
 **Situation:** You need to: (1) validate all tool input parameters are in correct format before execution, and (2) convert all returned timestamps from Unix to ISO 8601 for the agent to process. Which hook(s) should you use?
 **Options:**
@@ -120,7 +128,8 @@
 
 ---
 
-## Question 189
+## Question 199
+
 **Title:** Transient vs Non-retryable Error Categorization
 **Situation:** Your MCP integration encounters: (1) API temporarily down (timeout), (2) malformed input to the tool call, (3) API rate limit exceeded, (4) database connection pool exhausted. Which should be retried vs escalated?
 **Options:**
@@ -135,7 +144,8 @@
 
 ---
 
-## Question 190
+## Question 200
+
 **Title:** Lost-in-the-Middle Effect and Information Placement
 **Situation:** Your agent processes 100K tokens: 10K system prompt, 20K conversation history, 40K tool results from subagents, 30K contextual documents. Critical findings from subagents appear in the middle of the 40K tool result block. The model frequently misses them. How should you restructure?
 **Options:**

@@ -19,13 +19,13 @@
 **Title:** Balancing Breadth and Depth in Multi-agent Task Decomposition
 **Situation:** Your coordinator needs to research "climate solutions adoption barriers" across 15 different sectors. An engineer proposes: (1) Depth approach—spawn one research subagent per sector (15 subagents), maximizing coverage but creating coordination overhead. (2) Breadth approach—spawn 3 subagents each covering 5 sectors, reducing coordination overhead but risking shallow coverage.
 **Options:**
-- A) Use the depth approach; more subagents always produce better coverage
-- B) Use the breadth approach; fewer subagents reduce context overhead
-- C) Start with breadth (3 subagents for quick coverage), then spawn focused depth subagents for high-priority sectors
-- D) Use vector databases to manage all 15 sectors within one subagent context
+- A) Start with breadth (3 subagents for quick coverage), then spawn focused depth subagents for high-priority sectors identified in initial research
+- B) Use vector databases to manage all 15 sectors within one subagent context
+- C) Use the depth approach; spawn individual subagents for each sector to ensure coverage
+- D) Use the breadth approach; fewer subagents reduce coordination overhead
 
-**Correct Answer:** C
-**Feedback:** Hybrid approach enables efficient initial coverage (breadth) while preserving the ability to deepen investigation into sectors that warrant it (depth). A creates unnecessary coordination overhead for routine coverage. B risks missing important sector-specific details. D requires infrastructure investment without solving the decomposition problem.
+**Correct Answer:** A
+**Feedback:** Hybrid approach enables efficient initial coverage (breadth) while preserving the ability to deepen investigation into sectors that warrant it (depth). B requires infrastructure investment without solving the decomposition problem. C creates unnecessary coordination overhead. D risks missing important sector-specific details.
 **Theory Reference:** Domain 1.2 - Coordinator result aggregation and decomposition
 
 ---
@@ -79,13 +79,13 @@
 **Title:** Retryable vs Non-retryable Error Response and Recovery
 **Situation:** An MCP tool integration encounters two errors: (1) "Database connection timeout" with `isRetryable: true`, and (2) "User lacks permission to access resource X" with `isRetryable: false`. How should these be handled?
 **Options:**
-- A) Retry both with exponential backoff; retrying never causes harm
-- B) Retry (1) with backoff; don't retry (2), instead escalate or ask for appropriate credentials
-- C) Treat both as failures and immediately ask a human to intervene
-- D) Retry both but with different backoff strategies based on error type
+- A) Treat both as failures and immediately ask a human to intervene
+- B) Retry both with exponential backoff; retrying never causes harm
+- C) Retry (1) with backoff; don't retry (2), instead escalate or ask for appropriate credentials
+- D) Retry (1) with backoff; attempt (2) with alternative pathways, different credentials, or specialized retry logic before escalation
 
-**Correct Answer:** B
-**Feedback:** Transient errors like timeouts benefit from retry with backoff and often succeed on retry. Permission errors are non-retryable—retrying won't help; the user needs credentials or the request must change. A wastes resources retrying permission errors. C over-escalates recoverable errors. D applies retries to non-retryable errors.
+**Correct Answer:** D
+**Feedback:** Transient errors like timeouts benefit from retry with backoff and often succeed on retry. Permission errors should be explored with retry variants—different credentials, alternative pathways, or contextual adjustments might resolve access issues. This reduces unnecessary escalation. A over-escalates recoverable errors. B wastes resources retrying non-recoverable errors. C prematurely gives up without exploring recovery options.
 **Theory Reference:** Domain 2.2 - Error categorization and retry decisions
 
 ---
@@ -114,8 +114,8 @@
 - C) Use a higher-tier model that better understands context nuances
 - D) Refine the instruction to: "Verify customer identity only before refunds, account changes, or financial transactions"
 
-**Correct Answer:** B
-**Feedback:** A precondition hook guarantees behavior—it blocks verification on specific request types (e.g., FAQ queries). Hooks provide deterministic guarantees; prompts provide probabilistic compliance. A doesn't solve the problem. C avoids the real issue. D still relies only on prompts which can be misinterpreted.
+**Correct Answer:** D
+**Feedback:** Refining the system prompt to specify when identity verification is required directly addresses the root cause of over-verification. Clear, specific instructions limit unnecessary tool calls. A adds complexity without clarity. B creates infrastructure overhead for a problem better solved with clearer instructions. C avoids the real issue by shifting to a different model.
 **Theory Reference:** Domain 1.5 - Hook placement and deterministic guarantees
 
 ---
